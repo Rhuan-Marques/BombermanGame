@@ -1,5 +1,7 @@
 package com.mygdx.game.screen;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
@@ -16,7 +18,6 @@ public class MainGame implements Screen
 	Player player;
 	int x = 0,y = 0;
 	Camada camadas[] = new Camada[5];//make grid snap Static
-	
 	Texture chaoTexture = new Texture("box.jpg");
 	Grid game;
 	
@@ -25,7 +26,7 @@ public class MainGame implements Screen
 		player = new Player(0, 0, new Texture("badlogic.jpg"));
 		for(int i = 0;i<camadas.length;i++)
 		{
-			camadas[i] = new Camada(5);
+			camadas[i] = new Camada(8);
 		}
 		this.game = game;
 		for(int i = 0;i<camadas[0].getGridSnap();i++)
@@ -55,7 +56,40 @@ public class MainGame implements Screen
 	    int playerPos[] = player.getCurrentPos();
 		camadas[1].setTexture(null, playerPos[0], playerPos[1]);
 		//escrevendo player na nova posicao
-		player.handleInput(Gdx.input, camadas[0].getGridSnap());
+		player.handleInput(Gdx.input, camadas[1].getGridSnap());
+		if (player.bombas != null) 
+		{
+		    for (int i = 0; i < player.bombas.length; i++) 
+		    {
+		        List<int[]> localExplosao = player.updateBombasTime(delta, camadas[1].getGridSnap());
+		        if (localExplosao != null) 
+		        {
+		            for (int j = 0; j < localExplosao.size(); j++) 
+		            {
+		                int[] explosionCoords = localExplosao.get(j);
+		                int x = explosionCoords[0];
+		                int y = explosionCoords[1];
+		                System.out.println(x + "," + y);
+		                if(camadas[1].getTexture(x, y) == player.geTexture())
+		                {
+		                	//player perde vida
+		                }
+		                else 
+		                {
+		                	camadas[1].setTexture(null, x, y);
+						}
+		                
+		            }
+		            int[] pos = player.bombas[i].getPosicao();
+		            camadas[1].setTexture(null, pos[0], pos[1]);
+		        }
+		        int[] pos = player.bombas[i].getPosicao(); // Corrected the array declaration
+		        camadas[1].setTexture(Bomba.getBombaTexture(), pos[0], pos[1]);
+		    }
+		}
+
+		
+			
 		playerPos = player.getCurrentPos();
 		camadas[1].setTexture(player.geTexture(), playerPos[0], playerPos[1]);
 		game.batch.begin();
