@@ -36,6 +36,13 @@ public class MainGame implements Screen
 				camadas[0].setTexture(chaoTexture, i, j);
 			}
 		}
+		for(int i = 1;i<camadas[1].getGridSnap();i+=2)
+		{
+			for(int j = 1;j<camadas[1].getGridSnap();j+=2)
+			{
+				camadas[1].setTexture(new Texture("tile.jpg"), i, j);
+			}
+		}
 		
 	}
 	
@@ -56,11 +63,28 @@ public class MainGame implements Screen
 	    int playerPos[] = player.getCurrentPos();
 		camadas[1].setTexture(null, playerPos[0], playerPos[1]);
 		//escrevendo player na nova posicao
-		player.handleInput(Gdx.input, camadas[1].getGridSnap());
+		int posAdj[][] = player.getAdjacentPositions(camadas[1].getGridSnap());
+		Boolean posOcupadas[] = new Boolean[4];
+		//pegando posicoes adjacentes ao player
+		for(int i = 0;i<posAdj.length;i++)
+		{
+			if(posAdj[i]!= null && camadas[1].getTexture(posAdj[i][0], posAdj[i][1]) !=null)
+			{
+				posOcupadas[i] = true;
+			}
+			else 
+			{
+				posOcupadas[i] = false;
+			}
+		}
+		player.handleInput(Gdx.input, camadas[1].getGridSnap(),posOcupadas);
+		
+		//Verificando bombas na scene
 		if (player.bombas != null) 
 		{
 		    for (int i = 0; i < player.bombas.length; i++) 
 		    {
+		    	int[] pos = player.bombas[i].getPosicao();
 		        List<int[]> localExplosao = player.updateBombasTime(delta, camadas[1].getGridSnap());
 		        if (localExplosao != null) 
 		        {
@@ -80,11 +104,12 @@ public class MainGame implements Screen
 						}
 		                
 		            }
-		            int[] pos = player.bombas[i].getPosicao();
 		            camadas[1].setTexture(null, pos[0], pos[1]);
 		        }
-		        int[] pos = player.bombas[i].getPosicao(); // Corrected the array declaration
-		        camadas[1].setTexture(Bomba.getBombaTexture(), pos[0], pos[1]);
+		        else
+		        {
+		        	camadas[1].setTexture(Bomba.getBombaTexture(), pos[0], pos[1]);
+		        }
 		    }
 		}
 

@@ -19,24 +19,24 @@ public class Player
 		this.posX = posX;
 		this.posY = posY;
 	}
-	public void handleInput(Input input,int gridLenght)
+	public void handleInput(Input input,int gridLenght,Boolean posOcupadas[])
 	{
-		if(input.isKeyJustPressed(Keys.UP)&& posY < gridLenght-1)
+		if(input.isKeyJustPressed(Keys.UP)&& posY < gridLenght-1 && !posOcupadas[3])
 		{
 			this.posY += 1;
 			this.bombPos = 0;
 		}
-		if(input.isKeyJustPressed(Keys.RIGHT)&& posX < gridLenght-1)
+		if(input.isKeyJustPressed(Keys.RIGHT)&& posX < gridLenght-1 && !posOcupadas[1])
 		{
 			this.posX +=  1;
 			this.bombPos = 1;
 		}
-		if(input.isKeyJustPressed(Keys.DOWN)&& posY > 0)
+		if(input.isKeyJustPressed(Keys.DOWN)&& posY > 0 && !posOcupadas[2])
 		{
 			this.bombPos = 3;
 			this.posY -= 1;
 		}
-		if(input.isKeyJustPressed(Keys.LEFT)&& posX > 0)
+		if(input.isKeyJustPressed(Keys.LEFT)&& posX > 0 && !posOcupadas[0])
 		{
 			this.bombPos = 2;
 			this.posX -=  1;
@@ -46,6 +46,24 @@ public class Player
 			spawnBomb(gridLenght);
 		}
 	}
+	 public int[][] getAdjacentPositions(int gridLength) 
+	 {
+	        int[][] adjacentPositions = new int[][] 
+	        		{
+	            {posX - 1, posY}, // Posição à esquerda
+	            {posX + 1, posY}, // Posição à direita
+	            {posX, posY - 1}, // Posição acima
+	            {posX, posY + 1}  // Posição abaixo
+	        		};
+	        for(int i=0;i<adjacentPositions.length;i++)
+	        {
+	        	if(adjacentPositions[i][0] < 0 || adjacentPositions[i][0] >= gridLength || adjacentPositions[i][1] < 0 || adjacentPositions[i][1] >= gridLength)
+	        	{
+	        		adjacentPositions[i] = null;
+	        	}
+	        }
+	        return adjacentPositions;
+	    }
 	public List<int[]> updateBombasTime(float delta,int gridLength)
 	{
 		for(int i =0;i<this.bombas.length;i++)
@@ -60,6 +78,7 @@ public class Player
 					{
 						newBombasBomba[j-1] = this.bombas[j];
 					}
+					this.bombas = newBombasBomba;
 					return matriz;
 				}
 			}
