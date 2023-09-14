@@ -26,7 +26,7 @@ public class MainGame implements Screen
 		player = new Player(0, 0, new Texture("badlogic.jpg"));
 		for(int i = 0;i<camadas.length;i++)
 		{
-			camadas[i] = new Camada(8);
+			camadas[i] = new Camada(20);
 		}
 		this.game = game;
 		for(int i = 0;i<camadas[0].getGridSnap();i++)
@@ -100,7 +100,7 @@ public class MainGame implements Screen
 		                }
 		                else 
 		                {
-		                	camadas[1].setTexture(null, x, y);
+		                	camadas[1].setTexture(Bomba.getExplosaTexture(), x, y);
 						}
 		                
 		            }
@@ -112,7 +112,7 @@ public class MainGame implements Screen
 		        }
 		    }
 		}
-
+		camadas[1].updateCamada(delta);
 		
 			
 		playerPos = player.getCurrentPos();
@@ -134,7 +134,8 @@ public class MainGame implements Screen
 		
 		game.batch.end();
 	}
-
+	
+	
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub

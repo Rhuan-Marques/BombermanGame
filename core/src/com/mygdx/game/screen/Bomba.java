@@ -12,7 +12,8 @@ public class Bomba
 	private int posY;
 	private static Texture bombaTexture =  new Texture("bomba.png");
 	private static int tamanhoDaExplosao = 3;
-	private static Texture explosaoTexture = new Texture("ship.png");
+	private static Texture explosaoTexture = new Texture("explosao.png");
+	public static float tempoDaExplosao = 0.5f;
 	public Bomba(int posX,int posY)
 	{
 		this.posX = posX;
