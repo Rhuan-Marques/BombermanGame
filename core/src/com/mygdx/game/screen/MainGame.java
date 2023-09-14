@@ -15,15 +15,16 @@ import com.mygdx.game.Grid;
  * os métodos declarados na interface*/
 public class MainGame implements Screen
 {
-	Player player;
+	Player players[];
 	int x = 0,y = 0;
 	Camada camadas[] = new Camada[5];//make grid snap Static
 	Texture chaoTexture = new Texture("box.jpg");
 	Grid game;
+	Boolean gameOver;
 	
 	public MainGame(Grid game)
 	{
-		player = new Player(0, 0, new Texture("badlogic.jpg"));
+		gameOver =false;
 		for(int i = 0;i<camadas.length;i++)
 		{
 			camadas[i] = new Camada(20);
@@ -43,13 +44,16 @@ public class MainGame implements Screen
 				camadas[1].setTexture(new Texture("tile.jpg"), i, j);
 			}
 		}
-		
+		players = new Player[2];
+		players[0] = new Player(0, 0, new Texture("badlogic.jpg"));
+		players[1] = new Player2(camadas[1].getGridSnap()-2, camadas[1].getGridSnap()-1, new Texture("player2.png"));
+		//Player
 	}
 	
 	@Override
 	public void show() 
 	{
-		//player = ;
+		//players[i] = ;
 		
 	}
 
@@ -59,80 +63,102 @@ public class MainGame implements Screen
 		Gdx.gl.glClearColor(0.05f, 0.05f, 0.2f, 1);
 	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		//float deltaTime = Gdx.graphics.getDeltaTime();
-	    //apagando player da posicao atual 
-	    int playerPos[] = player.getCurrentPos();
-		camadas[1].setTexture(null, playerPos[0], playerPos[1]);
-		//escrevendo player na nova posicao
-		int posAdj[][] = player.getAdjacentPositions(camadas[1].getGridSnap());
-		Boolean posOcupadas[] = new Boolean[4];
-		//pegando posicoes adjacentes ao player
-		for(int i = 0;i<posAdj.length;i++)
-		{
-			if(posAdj[i]!= null && camadas[1].getTexture(posAdj[i][0], posAdj[i][1]) !=null)
-			{
-				posOcupadas[i] = true;
-			}
-			else 
-			{
-				posOcupadas[i] = false;
-			}
-		}
-		player.handleInput(Gdx.input, camadas[1].getGridSnap(),posOcupadas);
-		
-		//Verificando bombas na scene
-		if (player.bombas != null) 
-		{
-		    for (int i = 0; i < player.bombas.length; i++) 
-		    {
-		    	int[] pos = player.bombas[i].getPosicao();
-		        List<int[]> localExplosao = player.updateBombasTime(delta, camadas[1].getGridSnap());
-		        if (localExplosao != null) 
-		        {
-		            for (int j = 0; j < localExplosao.size(); j++) 
-		            {
-		                int[] explosionCoords = localExplosao.get(j);
-		                int x = explosionCoords[0];
-		                int y = explosionCoords[1];
-		                System.out.println(x + "," + y);
-		                if(camadas[1].getTexture(x, y) == player.geTexture())
-		                {
-		                	//player perde vida
-		                }
-		                else 
-		                {
-		                	camadas[1].setTexture(Bomba.getExplosaTexture(), x, y);
-						}
-		                
-		            }
-		            camadas[1].setTexture(null, pos[0], pos[1]);
-		        }
-		        else
-		        {
-		        	camadas[1].setTexture(Bomba.getBombaTexture(), pos[0], pos[1]);
-		        }
-		    }
-		}
-		camadas[1].updateCamada(delta);
-		
-			
-		playerPos = player.getCurrentPos();
-		camadas[1].setTexture(player.geTexture(), playerPos[0], playerPos[1]);
-		game.batch.begin();
-		for(int camada = 0;camada<camadas.length;camada++)
-		{
-			for(int i = 0;i<camadas[camada].getGridSnap();i++)
-			{
-				for(int j = 0;j<camadas[camada].getGridSnap();j++)
+	    //apagando players[i] da posicao atual 
+	    
+	    gameOver = (!players[0].taVivo() || !players[1].taVivo());
+	    if(!gameOver)
+	    {
+	    	for(int i =0;i<players.length;i++)
+	    	{
+			    int playersPos[] = players[i].getCurrentPos();
+				//escrevendo players[i] na nova posicao
+				int posAdj[][] = players[i].getAdjacentPositions(camadas[1].getGridSnap());
+				Boolean posOcupadas[] = new Boolean[4];
+				//pegando posicoes adjacentes ao players[i]
+				for(int h = 0;h<posAdj.length;h++)
 				{
-					if(camadas[camada].getTexture(i,j) != null)
+					if(posAdj[h]!= null && camadas[1].getTexture(posAdj[h][0], posAdj[h][1]) !=null)
 					{
-						game.batch.draw(camadas[camada].getTexture(i,j), i * camadas[camada].getImageSize(), j * camadas[camada].getImageSize(), camadas[camada].getImageSize(), camadas[camada].getImageSize());	
+						posOcupadas[h] = true;
+					}
+					else 
+					{
+						posOcupadas[h] = false;
 					}
 				}
-			}
+				players[i].handleInput(Gdx.input, camadas[1].getGridSnap(),posOcupadas);
+				
+				//Verificando bombas na scene
+				if (players[i].bombas != null) 
+				{
+				    for (int h = 0; h < players[i].bombas.length; h++) 
+				    {
+				    	int[] pos = players[i].bombas[h].getPosicao();
+				        List<int[]> localExplosao = players[i].updateBombasTime(delta, camadas[1].getGridSnap());
+				        if (localExplosao != null) 
+				        {
+				        	for (int j = 0; j < localExplosao.size(); j++) 
+				        	{
+				        	    int[] explosionCoords = localExplosao.get(j);
+				        	    int x = explosionCoords[0];
+				        	    int y = explosionCoords[1];
+				        	    System.out.println(x + "," + y);
+
+				        	    Texture player1Texture = players[0].getTexture();
+				        	    Texture player2Texture = players[1].getTexture();
+				        	    Texture layer1Texture = camadas[1].getTexture(x, y);
+				        	   
+				        	    if (layer1Texture != null && (layer1Texture.equals(player1Texture)|| layer1Texture.equals(player2Texture))) 
+				        	    {
+				        	    	if(layer1Texture.equals(player2Texture))
+				        	    	{
+				        	    		players[1].recebeDano(1);
+				        	    	}
+				        	    	else 
+				        	    	{
+				        	    		players[0].recebeDano(1);
+									}
+				        	        
+				        	    } else 
+				        	    {
+				        	    	camadas[1].setTexture(Bomba.getExplosaTexture(), x, y);
+				        	    }
+				        	}
+				            camadas[1].setTexture(null, pos[0], pos[1]);
+				        }
+				        else
+				        {
+				        	camadas[1].setTexture(Bomba.getBombaTexture(), pos[0], pos[1]);
+				        }
+				    }
+				}
+				camadas[1].updateCamada(delta);
+				
+				camadas[1].setTexture(null, playersPos[0], playersPos[1]);
+				playersPos = players[i].getCurrentPos();
+				camadas[1].setTexture(players[i].geTexture(), playersPos[0], playersPos[1]);
+				game.batch.begin();
+				for(int camada = 0;camada<camadas.length;camada++)
+				{
+					for(int h = 0;h<camadas[camada].getGridSnap();h++)
+					{
+						for(int j = 0;j<camadas[camada].getGridSnap();j++)
+						{
+							if(camadas[camada].getTexture(h,j) != null)
+							{
+								game.batch.draw(camadas[camada].getTexture(h,j), h * camadas[camada].getImageSize(), j * camadas[camada].getImageSize(), camadas[camada].getImageSize(), camadas[camada].getImageSize());	
+							}
+						}
+					}
+				}
+				
+				game.batch.end();
+	    	}
+	    }
+	    else 
+	    {
+	    	game.setScreen(new MainMenu(game));
 		}
-		
-		game.batch.end();
 	}
 	
 	

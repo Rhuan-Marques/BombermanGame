@@ -1,5 +1,6 @@
 package com.mygdx.game.screen;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.List;
 
 import com.badlogic.gdx.Input;
@@ -13,11 +14,29 @@ public class Player
 	private int posY = 0;
 	private int bombPos;
 	public Bomba bombas[];
+	private int vida;
 	public Player(int posX,int posY,Texture playerTexture)
 	{
+		this.vida = 1;
 		this.playerTexture = playerTexture;
 		this.posX = posX;
 		this.posY = posY;
+	}
+	public Texture getTexture()
+	{
+		return this.playerTexture;
+	}
+	public void recebeDano(int i)
+	{
+		this.vida -= i;
+	}
+	public Boolean taVivo()
+	{
+		if(this.vida >= 1)
+		{
+			return true;
+		}
+		return false;
 	}
 	public void handleInput(Input input,int gridLenght,Boolean posOcupadas[])
 	{
@@ -41,7 +60,7 @@ public class Player
 			this.bombPos = 2;
 			this.posX -=  1;
 		}
-		if(input.isKeyJustPressed(Keys.D))
+		if(input.isKeyJustPressed(Keys.SHIFT_RIGHT))
 		{
 			spawnBomb(gridLenght);
 		}
@@ -66,20 +85,23 @@ public class Player
 	    }
 	public List<int[]> updateBombasTime(float delta,int gridLength)
 	{
-		for(int i =0;i<this.bombas.length;i++)
+		if(bombas !=null)
 		{
-			if(this.bombas[i]!=null)
+			for(int i =0;i<this.bombas.length;i++)
 			{
-				if(this.bombas[i].addToContador(delta))
+				if(this.bombas[i]!=null)
 				{
-					List<int[]> matriz =this.bombas[i].obterIndicesDaExplosao(gridLength);
-					Bomba newBombasBomba[] = new Bomba[this.bombas.length-1];
-					for(int j =1;j<this.bombas.length;j++)
+					if(this.bombas[i].addToContador(delta))
 					{
-						newBombasBomba[j-1] = this.bombas[j];
+						List<int[]> matriz =this.bombas[i].obterIndicesDaExplosao(gridLength);
+						Bomba newBombasBomba[] = new Bomba[this.bombas.length-1];
+						for(int j =1;j<this.bombas.length;j++)
+						{
+							newBombasBomba[j-1] = this.bombas[j];
+						}
+						this.bombas = newBombasBomba;
+						return matriz;
 					}
-					this.bombas = newBombasBomba;
-					return matriz;
 				}
 			}
 		}
@@ -167,8 +189,32 @@ public class Player
 		int arr[] = {this.posX,this.posY};
 		return arr;
 	}
+	public int getPosY()
+	{
+		return this.posY;
+	}
+	public int getPosX()
+	{
+		return this.posX;
+	}
+	public int getBomPos()
+	{
+		return this.bombPos;
+	}
+	public void addToPosX(int i)
+	{
+		this.posX+=i;
+	}
+	public void addToPosY(int i)
+	{
+		this.posY+=i;
+	}
 	public Texture geTexture()
 	{
 		return this.playerTexture;
+	}
+	public void setBombPos(int pos)
+	{
+		this.bombPos = pos;
 	}
 }
