@@ -1,6 +1,5 @@
 package com.mygdx.game.screen;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.List;
 
 import com.badlogic.gdx.Input;
@@ -42,25 +41,25 @@ public class Player
 	{
 		if(input.isKeyJustPressed(Keys.UP)&& posY < gridLenght-1 && !posOcupadas[3])
 		{
-			this.posY += 1;
-			this.bombPos = 0;
+			this.addToPosY(1);
+			this.setBombPos(3);
 		}
-		if(input.isKeyJustPressed(Keys.RIGHT)&& posX < gridLenght-1 && !posOcupadas[1])
+		else if(input.isKeyJustPressed(Keys.RIGHT)&& posX < gridLenght-1 && !posOcupadas[1])
 		{
-			this.posX +=  1;
-			this.bombPos = 1;
+			this.addToPosX(1);
+			this.setBombPos(1);
 		}
-		if(input.isKeyJustPressed(Keys.DOWN)&& posY > 0 && !posOcupadas[2])
+		else if(input.isKeyJustPressed(Keys.DOWN)&& posY > 0 && !posOcupadas[2])
 		{
-			this.bombPos = 3;
-			this.posY -= 1;
+			this.setBombPos(2);
+			this.addToPosY(-1);
 		}
-		if(input.isKeyJustPressed(Keys.LEFT)&& posX > 0 && !posOcupadas[0])
+		else if(input.isKeyJustPressed(Keys.LEFT)&& posX > 0 && !posOcupadas[0])
 		{
-			this.bombPos = 2;
-			this.posX -=  1;
+			this.setBombPos(0);
+			this.addToPosX(-1);
 		}
-		if(input.isKeyJustPressed(Keys.SHIFT_RIGHT))
+		if(input.isKeyJustPressed(Keys.SHIFT_RIGHT) && !posOcupadas[this.bombPos])
 		{
 			spawnBomb(gridLenght);
 		}
@@ -109,6 +108,10 @@ public class Player
 	}
 	public void spawnBomb(int gridLenght)
 	{
+		if(this.bombas !=null &&this.bombas.length >=1)
+		{
+			return;
+		}
 		Bomba bomba = null;
 		switch(this.bombPos)
 		{
@@ -122,27 +125,28 @@ public class Player
 			}
 			case 2:
 			{
-				if(this.posX - 1 >=0)
-				{
-					bomba = new Bomba(this.posX-1, this.posY);
-					break;
-				}
-			}
-			case 3:
-			{
 				if(this.posY - 1 >=0)
 				{
 					bomba = new Bomba(this.posX, this.posY-1);
 					break;
 				}
 			}
-			default:
+			case 3:
 			{
 				if(this.posY+ 1 < gridLenght)
 				{
 					bomba = new Bomba(this.posX, this.posY+1);
 					break;
 				}
+			}
+			default:
+			{
+				if(this.posX - 1 >=0)
+				{
+					bomba = new Bomba(this.posX-1, this.posY);
+					break;
+				}
+				
 				else 
 				{
 					if(this.posX + 1 < gridLenght)

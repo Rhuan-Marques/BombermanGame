@@ -50,41 +50,52 @@ public class Bomba
 	{
 		int deslocamento = 3;
         List<int[]> indices = new ArrayList<>();
-        int instanceOfXlower = this.posX - deslocamento;
-        int instanceOfXUpper = this.posX + deslocamento;
-        int instanceOfY = this.posY - deslocamento;
-        int instanceOfYUpper = this.posY + deslocamento;
-        if(instanceOfXlower < 0)
+        for(int i = this.posX+1;i<=this.posX+deslocamento;i++)//cima
         {
-            instanceOfXlower = 0;
-        }
-        if(instanceOfXUpper > gridLength-1)
-        {
-            instanceOfXUpper = gridLength-1;
-        }
-        if(instanceOfY < 0)
-        {
-            instanceOfY = 0;
-        }
-        if(instanceOfYUpper > gridLength-1)
-        {
-            instanceOfYUpper = gridLength-1;
-        }
-        for(int i = instanceOfXlower;i<=instanceOfXUpper;i++)
-        {
-            if(i == this.posX)
+            if(i > gridLength-1)
             {
-                continue;
+            	indices.add(new int[]{-1, -1});
             }
-            indices.add(new int[]{i, posY});
-        }
-        for(int i = instanceOfY;i<=instanceOfYUpper;i++)
-        {
-            if(i == this.posY)
+            else 
             {
-                continue;
+            	indices.add(new int[]{i, posY});
+			}
+            
+        }
+        for(int i = this.posX-1;i>=this.posX-deslocamento;i--)//baixo
+        {
+        	if(i < 0)
+            {
+            	indices.add(new int[]{-1, -1});
             }
-            indices.add(new int[]{posX, i});
+            else 
+            {
+            	indices.add(new int[]{i, posY});
+			}
+        }
+        
+        
+        for(int i = this.posY+1;i<=this.posY+deslocamento;i++)//direita
+        {
+        	if(i > gridLength-1)
+            {
+            	indices.add(new int[]{-1, -1});
+            }
+            else 
+            {
+            	 indices.add(new int[]{posX, i});
+			}
+        }
+        for(int i = this.posY-1;i>=this.posY-deslocamento;i--)//esquerda
+        {
+        	if(i < 0)
+            {
+            	indices.add(new int[]{-1, -1});
+            }
+            else 
+            {
+            	 indices.add(new int[]{posX, i});
+			}
         }
         return indices;
     }

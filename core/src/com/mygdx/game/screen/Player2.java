@@ -10,30 +10,29 @@ public class Player2 extends Player
 	{
 		super(posX, posY, playerTexture);
 	}
-
 	public void handleInput(Input input,int gridLenght,Boolean posOcupadas[])
 	{
 		if(input.isKeyJustPressed(Keys.W)&& this.getPosY()< gridLenght-1 && !posOcupadas[3])
 		{
 			this.addToPosY(1);
-			this.setBombPos(0);
+			this.setBombPos(3);
 		}
-		if(input.isKeyJustPressed(Keys.D)&& this.getPosX() < gridLenght-1 && !posOcupadas[1])
+		else if(input.isKeyJustPressed(Keys.D)&& this.getPosX() < gridLenght-1 && !posOcupadas[1])
 		{
 			this.addToPosX(1);
 			this.setBombPos(1);
 		}
-		if(input.isKeyJustPressed(Keys.S)&& this.getPosY() > 0 && !posOcupadas[2])
-		{
-			this.setBombPos(3);
-			this.addToPosY(-1);;
-		}
-		if(input.isKeyJustPressed(Keys.A)&& this.getPosX() > 0 && !posOcupadas[0])
+		else if(input.isKeyJustPressed(Keys.S)&& this.getPosY() > 0 && !posOcupadas[2])
 		{
 			this.setBombPos(2);
+			this.addToPosY(-1);
+		}
+		else if(input.isKeyJustPressed(Keys.A)&& this.getPosX() > 0 && !posOcupadas[0])
+		{
+			this.setBombPos(0);
 			this.addToPosX(-1);
 		}
-		if(input.isKeyJustPressed(Keys.F))
+		if(input.isKeyJustPressed(Keys.F)&& !posOcupadas[this.getBomPos()])
 		{
 			spawnBomb(gridLenght);
 		}
