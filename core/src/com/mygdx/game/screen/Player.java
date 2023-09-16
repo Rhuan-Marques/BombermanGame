@@ -6,25 +6,20 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 
-public class Player 
+public class Player extends ObjetoDoJogo
 {
-	private Texture playerTexture;
-	private int posX = 0;
-	private int posY = 0;
-	private int bombPos;
+	protected int bombPos;
 	public Bomba bombas[];
 	private int vida;
-	public Player(int posX,int posY,Texture playerTexture)
-	{
-		this.vida = 1;
-		this.playerTexture = playerTexture;
-		this.posX = posX;
-		this.posY = posY;
-	}
-	public Texture getTexture()
-	{
-		return this.playerTexture;
-	}
+
+    public Player(int posX, int posY, Texture playerTexture) 
+    {
+        super();
+        this.vida = 1;
+        this.texture = playerTexture; 
+        this.posX = posX;
+        this.posY = posY;
+    }
 	public void recebeDano(int i)
 	{
 		this.vida -= i;
@@ -37,33 +32,56 @@ public class Player
 		}
 		return false;
 	}
-	public void handleInput(Input input,int gridLenght,Boolean posOcupadas[])
+	public int handleInput(Input input, int gridLenght, Boolean posOcupadas[]) 
 	{
-		if(input.isKeyJustPressed(Keys.UP)&& posY < gridLenght-1 && !posOcupadas[3])
-		{
-			this.addToPosY(1);
-			this.setBombPos(3);
-		}
-		else if(input.isKeyJustPressed(Keys.RIGHT)&& posX < gridLenght-1 && !posOcupadas[1])
-		{
-			this.addToPosX(1);
-			this.setBombPos(1);
-		}
-		else if(input.isKeyJustPressed(Keys.DOWN)&& posY > 0 && !posOcupadas[2])
-		{
-			this.setBombPos(2);
-			this.addToPosY(-1);
-		}
-		else if(input.isKeyJustPressed(Keys.LEFT)&& posX > 0 && !posOcupadas[0])
-		{
-			this.setBombPos(0);
-			this.addToPosX(-1);
-		}
-		if(input.isKeyJustPressed(Keys.SHIFT_RIGHT) && !posOcupadas[this.bombPos])
-		{
-			spawnBomb(gridLenght);
-		}
+	    int pos = -1;
+	    if (input.isKeyJustPressed(Keys.SHIFT_RIGHT) && !posOcupadas[this.bombPos]) 
+	    {
+	        spawnBomb(gridLenght);
+	    }
+	    if (input.isKeyJustPressed(Keys.UP) && posY < gridLenght - 1) 
+	    {
+	        if (!posOcupadas[3]) 
+	        {
+	            this.addToPosY(1);
+	            this.setBombPos(3);
+	        } else 
+	        {
+	            pos = 3;
+	        }
+	    } else if (input.isKeyJustPressed(Keys.RIGHT) && posX < gridLenght - 1) 
+	    {
+	        if (!posOcupadas[1]) 
+	        {
+	            this.addToPosX(1);
+	            this.setBombPos(1);
+	        } else {
+	            pos = 1;
+	        }
+	    } else if (input.isKeyJustPressed(Keys.DOWN) && posY > 0) 
+	    {
+	        if (!posOcupadas[2]) 
+	        {
+	            this.setBombPos(2);
+	            this.addToPosY(-1);
+	        } else 
+	        {
+	            pos = 2;
+	        }
+	    } else if (input.isKeyJustPressed(Keys.LEFT) && posX > 0) 
+	    {
+	        if (!posOcupadas[0]) 
+	        {
+	            this.setBombPos(0);
+	            this.addToPosX(-1);
+	        } else 
+	        {
+	            pos = 0;
+	        }
+	    }
+	    return pos;
 	}
+
 	 public int[][] getAdjacentPositions(int gridLength) 
 	 {
 	        int[][] adjacentPositions = new int[][] 
@@ -193,29 +211,9 @@ public class Player
 		int arr[] = {this.posX,this.posY};
 		return arr;
 	}
-	public int getPosY()
-	{
-		return this.posY;
-	}
-	public int getPosX()
-	{
-		return this.posX;
-	}
 	public int getBomPos()
 	{
 		return this.bombPos;
-	}
-	public void addToPosX(int i)
-	{
-		this.posX+=i;
-	}
-	public void addToPosY(int i)
-	{
-		this.posY+=i;
-	}
-	public Texture geTexture()
-	{
-		return this.playerTexture;
 	}
 	public void setBombPos(int pos)
 	{

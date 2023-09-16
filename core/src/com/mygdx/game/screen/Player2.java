@@ -10,31 +10,53 @@ public class Player2 extends Player
 	{
 		super(posX, posY, playerTexture);
 	}
-	public void handleInput(Input input,int gridLenght,Boolean posOcupadas[])
+	public int handleInput(Input input, int gridLenght, Boolean posOcupadas[]) 
 	{
-		if(input.isKeyJustPressed(Keys.W)&& this.getPosY()< gridLenght-1 && !posOcupadas[3])
-		{
-			this.addToPosY(1);
-			this.setBombPos(3);
-		}
-		else if(input.isKeyJustPressed(Keys.D)&& this.getPosX() < gridLenght-1 && !posOcupadas[1])
-		{
-			this.addToPosX(1);
-			this.setBombPos(1);
-		}
-		else if(input.isKeyJustPressed(Keys.S)&& this.getPosY() > 0 && !posOcupadas[2])
-		{
-			this.setBombPos(2);
-			this.addToPosY(-1);
-		}
-		else if(input.isKeyJustPressed(Keys.A)&& this.getPosX() > 0 && !posOcupadas[0])
-		{
-			this.setBombPos(0);
-			this.addToPosX(-1);
-		}
-		if(input.isKeyJustPressed(Keys.F)&& !posOcupadas[this.getBomPos()])
-		{
-			spawnBomb(gridLenght);
-		}
+	    int pos = -1;
+	    if (input.isKeyJustPressed(Keys.F) && !posOcupadas[this.bombPos]) 
+	    {
+	        spawnBomb(gridLenght);
+	    }
+	    if (input.isKeyJustPressed(Keys.W) && posY < gridLenght - 1) 
+	    {
+	        if (!posOcupadas[3]) 
+	        {
+	            this.addToPosY(1);
+	            this.setBombPos(3);
+	        } else 
+	        {
+	            pos = 3;
+	        }
+	    } else if (input.isKeyJustPressed(Keys.D) && posX < gridLenght - 1) 
+	    {
+	        if (!posOcupadas[1]) 
+	        {
+	            this.addToPosX(1);
+	            this.setBombPos(1);
+	        } else {
+	            pos = 1;
+	        }
+	    } else if (input.isKeyJustPressed(Keys.S) && posY > 0) 
+	    {
+	        if (!posOcupadas[2]) 
+	        {
+	            this.setBombPos(2);
+	            this.addToPosY(-1);
+	        } else 
+	        {
+	            pos = 2;
+	        }
+	    } else if (input.isKeyJustPressed(Keys.A) && posX > 0) 
+	    {
+	        if (!posOcupadas[0]) 
+	        {
+	            this.setBombPos(0);
+	            this.addToPosX(-1);
+	        } else 
+	        {
+	            pos = 0;
+	        }
+	    }
+	    return pos;
 	}
 }

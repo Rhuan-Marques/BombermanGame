@@ -16,111 +16,107 @@ import com.mygdx.game.Grid;
  * os métodos declarados na interface*/
 public class MainGame implements Screen
 {
-	Player players[];
-	int x = 0,y = 0;
-	Camada camadas[] = new Camada[5];//make grid snap Static
-	Texture chaoTexture = new Texture("grass.png");
-	Grid game;
-	Boolean gameOver;
-	Texture detailTextures[][] = {{ new Texture("grassSpriteb.png"), new Texture("grassSprite.png")},{new Texture("redFlower.png"),new Texture("yellowFlower.png"),new Texture("whiteFlower.png")}};
-	public MainGame(Grid game)
-	{
-		gameOver =false;
-		this.game = game;
-		//Camada de detalhes do mapa PLACEHOLDER
-		
-		this.generateCamadaTextures();
-		players = new Player[2];
-		players[0] = new Player(0, 0, new Texture("badlogic.jpg"));
-		players[1] = new Player2(camadas[3].getGridSnap()-2, camadas[3].getGridSnap()-1, new Texture("player2.png"));
-		//Player
-	}
-	
-	@Override
-	public void show() 
-	{
-		//players[i] = ;
-		
-	}
+	  Player players[];
+	    int x = 0, y = 0;
+	    Camada camadas[] = new Camada[5];
+	    Texture chaoTexture = new Texture("grass.png");
+	    Grid game;
+	    Boolean gameOver;
+	    Texture detailTextures[][] = {{new Texture("grassSpriteb.png"), new Texture("grassSprite.png")},
+	            {new Texture("redFlower.png"), new Texture("yellowFlower.png"), new Texture("whiteFlower.png")}};
 
-	@Override
-	public void render(float delta) {
-		Gdx.gl.glClearColor(0.6f, 0.4f, 0.2f, 1);
-	    Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	    
-	    // Verifique o estado do jogo
-	    gameOver = (!players[0].taVivo() || !players[1].taVivo());
-	    
-	    if (!gameOver) 
+	    public MainGame(Grid game) 
 	    {
-	        for (int i = 0; i < players.length; i++) 
-	        {
-	            int[] playersPos = players[i].getCurrentPos();
-	            Boolean[] posOcupadas = camadas[3].posAdjOcupadas(players[i]);
-	            
-	            players[i].handleInput(Gdx.input, camadas[3].getGridSnap(), posOcupadas);
-	            
-	            // Verifique as bombas na cena
-	            camadas[3].verificaBombasNaCamada(players[i], players, delta);
-	            
-	            // Atualize a camada 3
-	            camadas[3].updateCamada(delta);
-	            
-	            // Atualize as posições dos jogadores na camada
-	            camadas[3].setTexture(null, playersPos[0], playersPos[1]);
-	            playersPos = players[i].getCurrentPos();
-	            camadas[3].setTexture(players[i].geTexture(), playersPos[0], playersPos[1]);
-	            
-	            // Renderize as camadas
-	            game.batch.begin();
-	            
-	            this.renderizaCamadasdoGame();
-	            
-	            game.batch.end();
-	        }
-	    } else 
-	    {
-	        game.setScreen(new MainMenu(game));
+	        gameOver = false;
+	        this.game = game;
+	        this.generateCamadaTextures();
+	        players = new Player[2];
+	        players[0] = new Player(0, 0, new Texture("badlogic.jpg"));
+	        players[1] = new Player2(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap() - 1, new Texture("player2.png"));
 	    }
-	}
 
-	public void renderizaCamadasdoGame()
-	{
-		for (int camada = 0; camada < camadas.length; camada++) 
-        {
-            for (int h = 0; h < camadas[camada].getGridSnap(); h++) 
-            {
-                for (int j = 0; j < camadas[camada].getGridSnap(); j++) 
-                {
-                    if (camadas[camada].getTexture(h, j) != null) 
-                    {
-                    	if(camada != 1)
-                    	{
-                    		game.batch.draw(camadas[camada].getTexture(h, j), h * camadas[camada].getImageSize(), j * camadas[camada].getImageSize(), camadas[camada].getImageSize(), camadas[camada].getImageSize());
-                    	}
-                    	else 
-                    	{//Camada de detalhes do mapa PLACEHOLDER
-                    		
-                    		// Usando uma funcao hash para gerar numeros pseudo-aleatorios
-                    		long seed = (long)h * 2654435761L + (long)j * 2654435789L;
-                    		Random random = new Random(seed);
-                    		//Posicao na tela
-                    		float offsetX = random.nextFloat() * camadas[camada].getImageSize();
-                    		float offsetY = random.nextFloat() * camadas[camada].getImageSize();
-                    		game.batch.draw( camadas[camada].getTexture(h, j),h * camadas[camada].getImageSize() + offsetX,j * camadas[camada].getImageSize() + offsetY,camadas[camada].getImageSize() / 4,camadas[camada].getImageSize() / 4);
-						}
-                        
-                    }
-  
-                }
-            }
-        }
-	}
+	    @Override
+	    public void show() 
+	    {
+	        // players[i] = ;
+	    }
+
+	    public void render(float delta) 
+	    {
+	        Gdx.gl.glClearColor(0.6f, 0.4f, 0.2f, 1);
+	        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+	        gameOver = (!players[0].taVivo() || !players[1].taVivo());
+
+	        if (!gameOver) 
+	        {
+	            for (int i = 0; i < players.length; i++) 
+	            {
+	                int[] playersPos = players[i].getCurrentPos();
+	                Boolean[] posOcupadas = camadas[3].posAdjOcupadas(players[i]);
+
+	                int pos = players[i].handleInput(Gdx.input, camadas[3].getGridSnap(), posOcupadas);
+
+	                camadas[3].verificaBombasNaCamada(players[i], players, delta);
+
+	                camadas[3].updateCamada(delta);
+
+	                camadas[3].setObjetoDoJogo(null, playersPos[0], playersPos[1]);
+	                playersPos = players[i].getCurrentPos();
+	                camadas[3].setObjetoDoJogo(players[i], playersPos[0], playersPos[1]);
+	                camadas[3].handleColission(pos,players[i].getAdjacentPositions(camadas[3].getGridSnap()),players);
+	                for(int y =0;players[0].bombas!= null&&y<players[0].bombas.length;y++)
+	                {
+	                	System.out.println(players[0].bombas[y].getPosicao()[0]+" "+players[0].bombas[y].getPosicao()[1]);
+	                }
+	                game.batch.begin();
+
+	                this.renderizaCamadasdoGame();
+
+	                game.batch.end();
+	            }
+	        } else 
+	        {
+	            game.setScreen(new MainMenu(game));
+	        }
+	    }
+
+	    public void renderizaCamadasdoGame() 
+	    {
+	        for (int camada = 0; camada < camadas.length; camada++) 
+	        {
+	            for (int h = 0; h < camadas[camada].getGridSnap(); h++) 
+	            {
+	                for (int j = 0; j < camadas[camada].getGridSnap(); j++) 
+	                {
+	                    ObjetoDoJogo objeto = camadas[camada].getObjetoDoJogo(h, j);
+	                    if (objeto != null) 
+	                    {
+	                        if (camada != 1) 
+	                        {
+	                            game.batch.draw(objeto.geTexture(), h * camadas[camada].getImageSize(),
+	                                    j * camadas[camada].getImageSize(), camadas[camada].getImageSize(),
+	                                    camadas[camada].getImageSize());
+	                        } else 
+	                        {
+	                            long seed = (long) h * 2654435761L + (long) j * 2654435789L;
+	                            Random random = new Random(seed);
+	                            float offsetX = random.nextFloat() * camadas[camada].getImageSize();
+	                            float offsetY = random.nextFloat() * camadas[camada].getImageSize();
+	                            game.batch.draw(objeto.geTexture(), h * camadas[camada].getImageSize() + offsetX,
+	                                    j * camadas[camada].getImageSize() + offsetY,
+	                                    camadas[camada].getImageSize() / 4, camadas[camada].getImageSize() / 4);
+	                        }
+	                    }
+	                }
+	            }
+	        }
+	    }
 	public void generateCamadaTextures() 
 	{
 	    for (int i = 0; i < camadas.length; i++) 
 	    {
-	        camadas[i] = new Camada(20);
+	        camadas[i] = new Camada(10);
 	    }
 	    // Camada de detalhes do mapa PLACEHOLDER
 	    this.generateDetailTextures(camadas[1]);
@@ -142,19 +138,31 @@ public class MainGame implements Screen
 	            Random random = new Random();
 	            int indexi = random.nextInt(detailTextures.length);
 	            int indexii = random.nextInt(detailTextures[indexi].length);
-	            camada.setTexture(detailTextures[indexi][indexii], i, j);
+
+	            ObjetoDoJogo objeto = new ObjetoDoJogo();
+	            objeto.setTexture(detailTextures[indexi][indexii]);
+	            objeto.setPosX(i);
+	            objeto.setPosY(j);
+
+	            camada.setObjetoDoJogo(objeto, i, j);
 	        }
 	    }
 	}
+
 	private void generateBreakableTileTextures(Camada camada)
 	{
-		for(int i = 1;i<camada.getGridSnap();i+=2)
-		{
-			for(int j = 1;j<camada.getGridSnap();j+=2)
-			{
-				camadas[3].setTexture(new Texture("tile.jpg"), i, j);
-			}
-		}
+	    for(int i = 1; i < camada.getGridSnap(); i += 2)
+	    {
+	        for(int j = 1; j < camada.getGridSnap(); j += 2)
+	        {
+	            ObjetoDoJogo objeto = new ObjetoDoJogo();
+	            objeto.setTexture(new Texture("tile.jpg"));
+	            objeto.setPosX(i);
+	            objeto.setPosY(j);
+
+	            camada.setObjetoDoJogo(objeto, i, j);
+	        }
+	    }
 	}
 
 	private void generateGroundTextures(Camada camada) 
@@ -163,7 +171,12 @@ public class MainGame implements Screen
 	    {
 	        for (int j = 0; j < camada.getGridSnap(); j++) 
 	        {
-	            camada.setTexture(chaoTexture, i, j);
+	            ObjetoDoJogo objeto = new ObjetoDoJogo();
+	            objeto.setTexture(chaoTexture);
+	            objeto.setPosX(i);
+	            objeto.setPosY(j);
+
+	            camada.setObjetoDoJogo(objeto, i, j);
 	        }
 	    }
 	}
@@ -174,10 +187,16 @@ public class MainGame implements Screen
 	    {
 	        for (int j = 1; j < camada.getGridSnap(); j += 2) 
 	        {
-	            camada.setTexture(new Texture("chao.png"), i, j);
+	            ObjetoDoJogo objeto = new ObjetoDoJogo();
+	            objeto.setTexture(new Texture("chao.png"));
+	            objeto.setPosX(i);
+	            objeto.setPosY(j);
+
+	            camada.setObjetoDoJogo(objeto, i, j);
 	        }
 	    }
 	}
+
 	@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub

@@ -4,25 +4,19 @@ import java.util.List;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class Bomba 
+public class Bomba extends ObjetoDoJogo
 {
 	private static float tempoDeExplosao = 0.5f;
-	private float contador = -1;
-	private int posX;
-	private int posY;
-	private static Texture bombaTexture =  new Texture("bomba.png");
-	private static int tamanhoDaExplosao = 3;
-	private static Texture explosaoTexture = new Texture("explosao.png");
-	public static float tempoDaExplosao = 0.5f;
-	public Bomba(int posX,int posY)
-	{
-		this.posX = posX;
-		this.posY = posY;
-	}
-	public static Texture getExplosaTexture()
-	{
-		return Bomba.explosaoTexture;
-	}
+    private float contador = -1;
+    private static Texture bombaTexture = new Texture("bomba.png");
+    private static int tamanhoDaExplosao = 3;
+
+    public Bomba(int posX, int posY)
+    {
+        this.posX = posX;
+        this.posY = posY;
+        this.setTexture(bombaTexture);
+    }
 	public static Texture getBombaTexture()
 	{
 		return Bomba.bombaTexture;
@@ -58,7 +52,7 @@ public class Bomba
             }
             else 
             {
-            	indices.add(new int[]{i, posY});
+            	indices.add(new int[]{i, this.posY});
 			}
             
         }
@@ -70,7 +64,7 @@ public class Bomba
             }
             else 
             {
-            	indices.add(new int[]{i, posY});
+            	indices.add(new int[]{i, this.posY});
 			}
         }
         
@@ -99,7 +93,9 @@ public class Bomba
         }
         return indices;
     }
-	
+	public String toString() {
+        return "Bomba na posicao ("+this.getPosX()+", "+this.getPosY()+")";
+    }
 	
 	
 }
