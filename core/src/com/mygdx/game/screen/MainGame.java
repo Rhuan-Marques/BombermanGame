@@ -22,6 +22,7 @@ public class MainGame implements Screen
 	    Texture chaoTexture = new Texture("grass.png");
 	    Grid game;
 	    Boolean gameOver;
+	    Texture spriteDeCoracaoTexture = new Texture("spriteDeCoracao.png");
 	    Texture detailTextures[][] = {{new Texture("grassSpriteb.png"), new Texture("grassSprite.png")},
 	            {new Texture("redFlower.png"), new Texture("yellowFlower.png"), new Texture("whiteFlower.png")}};
 
@@ -31,8 +32,8 @@ public class MainGame implements Screen
 	        this.game = game;
 	        this.generateCamadaTextures();
 	        players = new Player[2];
-	        players[0] = new Player(0, 0, new Texture("badlogic.jpg"));
-	        players[1] = new Player2(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap() - 1, new Texture("player2.png"));
+	        players[0] = new Player(0, 0, new Texture("badlogic.jpg"),2);
+	        players[1] = new Player2(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap() - 1, new Texture("player2.png"),2);
 	    }
 
 	    @Override
@@ -45,7 +46,7 @@ public class MainGame implements Screen
 	    {
 	        Gdx.gl.glClearColor(0.6f, 0.4f, 0.2f, 1);
 	        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
+            
 	        gameOver = (!players[0].taVivo() || !players[1].taVivo());
 
 	        if (!gameOver) 
@@ -83,6 +84,8 @@ public class MainGame implements Screen
 
 	    public void renderizaCamadasdoGame() 
 	    {
+
+	    	
 	        for (int camada = 0; camada < camadas.length; camada++) 
 	        {
 	            for (int h = 0; h < camadas[camada].getGridSnap(); h++) 
@@ -111,6 +114,19 @@ public class MainGame implements Screen
 	                }
 	            }
 	        }
+	        for (int i = 0; i < players.length; i++) 
+            {
+	        	float offset = 0f;
+	        	if(i ==1)
+	        	{
+	        		offset = Grid.WIDTH - (players[i].getVida() *(2*spriteDeCoracaoTexture.getWidth()));
+	        	}
+	        	for(int j =0;j<players[i].getVida();j++)
+	        	{
+	        		game.batch.draw(spriteDeCoracaoTexture,(j * (2*spriteDeCoracaoTexture.getWidth()) ) + offset,
+                            Grid.HEIGTH - (spriteDeCoracaoTexture.getHeight()*2),(2*spriteDeCoracaoTexture.getWidth()),spriteDeCoracaoTexture.getHeight()*2);
+	        	}
+            }
 	    }
 	public void generateCamadaTextures() 
 	{

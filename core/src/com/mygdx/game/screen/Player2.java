@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Player2 extends Player 
 {
-	public Player2(int posX, int posY, Texture playerTexture) 
+	public Player2(int posX, int posY, Texture playerTexture,int vida) 
 	{
-		super(posX, posY, playerTexture);
+		super(posX, posY, playerTexture,vida);
 	}
 	public int handleInput(Input input, int gridLenght, Boolean posOcupadas[]) 
 	{

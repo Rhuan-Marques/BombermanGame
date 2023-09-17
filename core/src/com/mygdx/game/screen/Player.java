@@ -12,10 +12,10 @@ public class Player extends ObjetoDoJogo
 	public Bomba bombas[];
 	private int vida;
 
-    public Player(int posX, int posY, Texture playerTexture) 
+    public Player(int posX, int posY, Texture playerTexture,int vida) 
     {
         super();
-        this.vida = 1;
+        this.vida = vida;
         this.texture = playerTexture; 
         this.posX = posX;
         this.posY = posY;
@@ -205,6 +205,10 @@ public class Player extends ObjetoDoJogo
 			newBombas[newBombas.length-1] = bomba;
 			bombas = newBombas;
 		}
+	}
+	public int getVida()
+	{
+		return this.vida;
 	}
 	public int[] getCurrentPos()
 	{
