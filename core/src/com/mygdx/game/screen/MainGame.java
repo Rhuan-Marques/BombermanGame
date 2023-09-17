@@ -1,14 +1,11 @@
 package com.mygdx.game.screen;
 
-import java.util.List;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.ScreenUtils;
 import com.mygdx.game.Grid;
 
 /*"implements" é usado para garantir que a classe MainGameScreen cumpra todos os métodos 
