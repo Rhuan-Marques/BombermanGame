@@ -1,4 +1,4 @@
-package com.mygdx.game.screen;
+package com.mygdx.game.fase;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;

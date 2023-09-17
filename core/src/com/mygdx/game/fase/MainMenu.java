@@ -1,11 +1,10 @@
-package com.mygdx.game.screen;
-
+package com.mygdx.game.fase;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.mygdx.game.Grid;
+import com.mygdx.game.Bomberman;
 
 
 public class MainMenu implements Screen
@@ -16,12 +15,12 @@ public class MainMenu implements Screen
 	private static int PLAY_BUTTON_HEIGTH= 150;
 	private static int EXIT_BUTTON_Y = 100;
 	private static int PLAY_BUTTON_Y = 300;
-	Grid game;
+	Bomberman game;
 	Texture playButtonActive;
 	Texture playButtonInactive;
 	Texture exitButtonActive;
 	Texture exitButtonInactive;
-	public MainMenu(Grid game)
+	public MainMenu(Bomberman game)
 	{
 		this.game = game;
 		playButtonActive = new Texture("play_button_active.png");
@@ -42,8 +41,8 @@ public class MainMenu implements Screen
 		
 		game.batch.begin();
 		
-		int x = Grid.WIDTH/2 - EXIT_BUTTON_WIDTH/2;
-		if((Gdx.input.getX() < x + EXIT_BUTTON_WIDTH && Gdx.input.getX()> x && Grid.HEIGTH - Gdx.input.getY()< EXIT_BUTTON_Y+EXIT_BUTTON_HEIGTH &&  Grid.HEIGTH - Gdx.input.getY()> EXIT_BUTTON_Y) )
+		int x = Bomberman.WIDTH/2 - EXIT_BUTTON_WIDTH/2;
+		if((Gdx.input.getX() < x + EXIT_BUTTON_WIDTH && Gdx.input.getX()> x && Bomberman.HEIGTH - Gdx.input.getY()< EXIT_BUTTON_Y+EXIT_BUTTON_HEIGTH &&  Bomberman.HEIGTH - Gdx.input.getY()> EXIT_BUTTON_Y) )
 		{
 			game.batch.draw(exitButtonActive,x,EXIT_BUTTON_Y,EXIT_BUTTON_WIDTH ,EXIT_BUTTON_HEIGTH);
 			if(Gdx.input.isTouched())
@@ -56,7 +55,7 @@ public class MainMenu implements Screen
 			game.batch.draw(exitButtonInactive,x,EXIT_BUTTON_Y,EXIT_BUTTON_WIDTH ,EXIT_BUTTON_HEIGTH);
 		}
 		
-		if((Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX()> x && Grid.HEIGTH - Gdx.input.getY()< PLAY_BUTTON_Y+PLAY_BUTTON_HEIGTH &&  Grid.HEIGTH - Gdx.input.getY()> PLAY_BUTTON_Y) )
+		if((Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX()> x && Bomberman.HEIGTH - Gdx.input.getY()< PLAY_BUTTON_Y+PLAY_BUTTON_HEIGTH &&  Bomberman.HEIGTH - Gdx.input.getY()> PLAY_BUTTON_Y) )
 		{
 			game.batch.draw(playButtonActive,x,PLAY_BUTTON_Y,PLAY_BUTTON_WIDTH ,PLAY_BUTTON_HEIGTH);
 			if(Gdx.input.isTouched())

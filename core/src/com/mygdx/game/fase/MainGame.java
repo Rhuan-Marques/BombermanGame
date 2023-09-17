@@ -1,4 +1,4 @@
-package com.mygdx.game.screen;
+package com.mygdx.game.fase;
 
 import java.util.Random;
 
@@ -6,7 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.mygdx.game.Grid;
+import com.mygdx.game.Bomberman;
 
 /*"implements" é usado para garantir que a classe MainGameScreen cumpra todos os métodos 
  * definidos na interface Screen. Isso significa que a classe deve fornecer implementações para todos 
@@ -17,13 +17,13 @@ public class MainGame implements Screen
 	    int x = 0, y = 0;
 	    Camada camadas[] = new Camada[5];
 	    Texture chaoTexture = new Texture("grass.png");
-	    Grid game;
+	    Bomberman game;
 	    Boolean gameOver;
 	    Texture spriteDeCoracaoTexture = new Texture("spriteDeCoracao.png");
 	    Texture detailTextures[][] = {{new Texture("grassSpriteb.png"), new Texture("grassSprite.png")},
 	            {new Texture("redFlower.png"), new Texture("yellowFlower.png"), new Texture("whiteFlower.png")}};
 
-	    public MainGame(Grid game) 
+	    public MainGame(Bomberman game) 
 	    {
 	        gameOver = false;
 	        this.game = game;
@@ -116,12 +116,12 @@ public class MainGame implements Screen
 	        	float offset = 0f;
 	        	if(i ==1)
 	        	{
-	        		offset = Grid.WIDTH - (players[i].getVida() *(2*spriteDeCoracaoTexture.getWidth()));
+	        		offset = Bomberman.WIDTH - (players[i].getVida() *(2*spriteDeCoracaoTexture.getWidth()));
 	        	}
 	        	for(int j =0;j<players[i].getVida();j++)
 	        	{
 	        		game.batch.draw(spriteDeCoracaoTexture,(j * (2*spriteDeCoracaoTexture.getWidth()) ) + offset,
-                            Grid.HEIGTH - (spriteDeCoracaoTexture.getHeight()*2),(2*spriteDeCoracaoTexture.getWidth()),spriteDeCoracaoTexture.getHeight()*2);
+                            Bomberman.HEIGTH - (spriteDeCoracaoTexture.getHeight()*2),(2*spriteDeCoracaoTexture.getWidth()),spriteDeCoracaoTexture.getHeight()*2);
 	        	}
             }
 	    }

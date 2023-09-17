@@ -1,12 +1,10 @@
 package com.mygdx.game;
 
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.mygdx.game.screen.MainMenu;
+import com.mygdx.game.fase.MainMenu;
 
-
-public class Grid extends Game
+public class Bomberman extends Game
 {
 	public static int WIDTH = 1000;
 	public static int HEIGTH = 1000;
@@ -29,5 +27,4 @@ public class Grid extends Game
 		
 		
 	}
-	
 }

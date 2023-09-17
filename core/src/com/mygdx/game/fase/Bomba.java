@@ -1,4 +1,5 @@
-package com.mygdx.game.screen;
+package com.mygdx.game.fase;
+
 import java.util.ArrayList;
 import java.util.List;
 
