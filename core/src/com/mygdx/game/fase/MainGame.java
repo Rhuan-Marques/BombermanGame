@@ -5,7 +5,10 @@ import java.util.Random;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.mygdx.game.Bomberman;
 
 /*"implements" é usado para garantir que a classe MainGameScreen cumpra todos os métodos 
@@ -13,7 +16,10 @@ import com.mygdx.game.Bomberman;
  * os métodos declarados na interface*/
 public class MainGame implements Screen
 {
-	  Player players[];
+	//font 
+	  	private BitmapFont font;
+	  	private OrthographicCamera font_cam;
+	  	Player players[];
 	    int x = 0, y = 0;
 	    Camada camadas[] = new Camada[5];
 	    Texture chaoTexture = new Texture("grass.png");
@@ -27,6 +33,8 @@ public class MainGame implements Screen
 	    {
 	        gameOver = false;
 	        this.game = game;
+	        //load font
+	        font = new BitmapFont(Gdx.files.internal("fontLucidaSans.fnt"));
 	        this.generateCamadaTextures();
 	        players = new Player[2];
 	        players[0] = new Player(0, 0, new Texture("badlogic.jpg"),2);
@@ -37,6 +45,8 @@ public class MainGame implements Screen
 	    public void show() 
 	    {
 	        // players[i] = ;
+	    	font_cam = new OrthographicCamera();
+	    	font_cam.setToOrtho(false,Bomberman.WIDTH,Bomberman.HEIGTH);
 	    }
 
 	    public void render(float delta) 
@@ -111,19 +121,43 @@ public class MainGame implements Screen
 	                }
 	            }
 	        }
+	        game.batch.setProjectionMatrix(font_cam.combined);
 	        for (int i = 0; i < players.length; i++) 
-            {
-	        	float offset = 0f;
-	        	if(i ==1)
-	        	{
-	        		offset = Bomberman.WIDTH - (players[i].getVida() *(2*spriteDeCoracaoTexture.getWidth()));
-	        	}
-	        	for(int j =0;j<players[i].getVida();j++)
-	        	{
-	        		game.batch.draw(spriteDeCoracaoTexture,(j * (2*spriteDeCoracaoTexture.getWidth()) ) + offset,
-                            Bomberman.HEIGTH - (spriteDeCoracaoTexture.getHeight()*2),(2*spriteDeCoracaoTexture.getWidth()),spriteDeCoracaoTexture.getHeight()*2);
-	        	}
-            }
+	        {
+	        	String text = "Player"+(i+1)+"  ";
+
+	        	GlyphLayout layout = new GlyphLayout();
+	        	layout.setText(font, text);
+
+	        	float textWidth = layout.width;
+	        	
+	        	
+	        	
+	            float offset = 0f;
+	            if (i == 1) 
+	            {
+	                offset = Bomberman.WIDTH - (players[i].getVida() * (3.5f * spriteDeCoracaoTexture.getWidth()) + textWidth);
+	            }
+
+	            
+	            
+	            int j;
+	            for (j = 0; j < players[i].getVida(); j++) 
+	            {
+	                game.batch.draw(spriteDeCoracaoTexture, offset + textWidth + (j * (3.5f * spriteDeCoracaoTexture.getWidth())),
+	                        Bomberman.HEIGTH - (spriteDeCoracaoTexture.getHeight() * 3.5f),
+	                        (3.5f * spriteDeCoracaoTexture.getWidth()), spriteDeCoracaoTexture.getHeight() * 3.5f);
+	            }
+	            font.draw(game.batch, layout, offset,Bomberman.HEIGTH-10);
+	            // Update offset for the next player
+	            offset += textWidth + (j * (3.5f * spriteDeCoracaoTexture.getWidth()));
+	        }
+
+	        
+	        
+	        
+	        
+	        
 	    }
 	public void generateCamadaTextures() 
 	{
