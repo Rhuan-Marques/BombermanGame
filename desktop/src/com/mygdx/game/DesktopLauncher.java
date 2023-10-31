@@ -10,7 +10,7 @@ public class DesktopLauncher {
 		Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 		config.setForegroundFPS(144);
 		config.setTitle("Bomberman");
-		config.setWindowedMode(Bomberman.WIDTH, Bomberman.HEIGTH);
+		config.setWindowedMode(Bomberman.WIDTH, Bomberman.HEIGHT);
 		config.setResizable(false);
 		new Lwjgl3Application(new Bomberman(), config);
 	}

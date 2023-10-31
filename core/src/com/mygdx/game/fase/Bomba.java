@@ -8,12 +8,14 @@ import com.badlogic.gdx.graphics.Texture;
 public class Bomba extends ObjetoDoJogo
 {
 	private static float tempoDeExplosao = 0.5f;
-    private float contador = -1;
+    private float contador;
     private static Texture bombaTexture = new Texture("bomba.png");
-    private static int tamanhoDaExplosao = 3;
+    private int tamanhoDaExplosao;
 
     public Bomba(int posX, int posY)
     {
+    	this.tamanhoDaExplosao = 3;
+    	this.contador = -1;
         this.posX = posX;
         this.posY = posY;
         this.setTexture(bombaTexture);
@@ -22,9 +24,9 @@ public class Bomba extends ObjetoDoJogo
 	{
 		return Bomba.bombaTexture;
 	}
-	public static int getTamanhoExplosao()
+	public int getTamanhoExplosao()
 	{
-		return Bomba.tamanhoDaExplosao;
+		return this.tamanhoDaExplosao;
 	}
 	public int[] getPosicao()
 	{
@@ -43,7 +45,7 @@ public class Bomba extends ObjetoDoJogo
 	}
 	public List<int[]> obterIndicesDaExplosao(int gridLength) 
 	{
-		int deslocamento = 3;
+		int deslocamento = this.tamanhoDaExplosao;
         List<int[]> indices = new ArrayList<>();
         for(int i = this.posX+1;i<=this.posX+deslocamento;i++)//cima
         {

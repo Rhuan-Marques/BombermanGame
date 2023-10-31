@@ -7,7 +7,7 @@ import com.mygdx.game.fase.MainMenu;
 public class Bomberman extends Game
 {
 	public static int WIDTH = 1000;
-	public static int HEIGTH = 1000;
+	public static int HEIGHT = 1000;
 	
 	public SpriteBatch batch;
 	

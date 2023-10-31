@@ -6,6 +6,10 @@ public class Explosao extends ObjetoDoJogo
 {
 	private static Texture explosaoTexture = new Texture("explosao.png");
 	public static float tempoDaExplosao = 0.5f;
+	public Explosao()
+	{
+		
+	}
 	public static Texture getExplosaTexture()
 	{
 		return Explosao.explosaoTexture;
