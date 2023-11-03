@@ -136,7 +136,7 @@ public class Camada {
         for (int h = 0; h < posAdj.length; h++) 
         {
             // Verifica se a posição adjacente não é nula e se há um objeto na posição
-            if (posAdj[h] != null && this.getObjetoDoJogo(posAdj[h][0], posAdj[h][1]) != null) 
+            if (posAdj[h] != null && this.getObjetoDoJogo(posAdj[h][0], posAdj[h][1]) != null)
             {
                 posOcupadas[h] = true; // Posição ocupada
             } else 
@@ -157,7 +157,7 @@ public class Camada {
      * @param posAdj    Matriz de posições adjacentes à posição da colisão.
      * @param players   Array de jogadores no jogo.
      */
-    public void manejaColisao(int pos, int posAdj[][], Player players[]) 
+    public void manejaColisao(int pos, int posAdj[][], Player players[], Player current_player)
     {
         // Verifica se a posição de colisão não é inválida e se há um objeto na posição
         if (pos != -1 && this.getObjetoDoJogo(posAdj[pos][0], posAdj[pos][1]) != null) 
@@ -165,7 +165,8 @@ public class Camada {
             ObjetoDoJogo objetoDoJogo = this.getObjetoDoJogo(posAdj[pos][0], posAdj[pos][1]);
 
             // Verifica se o objeto na posição é uma bomba
-            if (objetoDoJogo.geTexture().equals(Bomba.getBombaTexture())) 
+            if (objetoDoJogo.geTexture().equals(Bomba.getBombaTexture()) ||
+                    objetoDoJogo.geTexture().equals(BombaVermelha.getBombaTexture()))
             {
                 // Remove a bomba da posição de colisão
                 this.setObjetoDoJogo(null, posAdj[pos][0], posAdj[pos][1]);
@@ -243,6 +244,12 @@ public class Camada {
                 objetoDoJogo.setPosY(newPosY);
                 this.setObjetoDoJogo(objetoDoJogo, newPosX, newPosY);
             }
+            //Checa se o Player colediu com um drop de bomba
+            if (objetoDoJogo.geTexture().equals(Drop_BombaVerm.getTexture())){
+                current_player.recebeVermelha(1);
+                this.setObjetoDoJogo(null, posAdj[pos][0], posAdj[pos][1]);
+            }
+
         }
     }
 
@@ -324,10 +331,7 @@ public class Camada {
                         else 
                         {
                             // Cria uma explosão no mapa se não houver jogador na posição
-                            ObjetoDoJogo objEx = new Explosao();
-                            objEx.setPosX(x);
-                            objEx.setPosY(y);
-                            objEx.setTexture(Explosao.getExplosaTexture());
+                            ObjetoDoJogo objEx = new Explosao(x, y);
                             this.setObjetoDoJogo(objEx, x, y);
                         }
 
@@ -336,6 +340,12 @@ public class Camada {
                         {
                             j = (((int) j / bombas[h].getTamanhoExplosao()) + 1) * bombas[h].getTamanhoExplosao();
                             j--;
+                            Random random = new Random();
+                            int chance = random.nextInt(100)+1;
+                            if(chance<=20){
+                                ObjetoDoJogo drop = new Drop_BombaVerm(x, y);
+                                this.setObjetoDoJogo(drop, x, y);
+                            }
                         }
                     }
                     // Remove a bomba após a explosão

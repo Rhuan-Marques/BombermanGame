@@ -24,6 +24,7 @@ public class Bomba extends ObjetoDoJogo
 	{
 		return Bomba.bombaTexture;
 	}
+
 	public int getTamanhoExplosao()
 	{
 		return this.tamanhoDaExplosao;
@@ -96,9 +97,13 @@ public class Bomba extends ObjetoDoJogo
         }
         return indices;
     }
+
+	protected void setTamanhoExplosao(int tam){
+		tamanhoDaExplosao = tam;
+	}
 	public String toString() {
         return "Bomba na posicao ("+this.getPosX()+", "+this.getPosY()+")";
     }
-	
+
 	
 }

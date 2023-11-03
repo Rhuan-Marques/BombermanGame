@@ -7,18 +7,43 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Player extends ObjetoDoJogo
 {
-	protected int bombPos;
+	protected int direction;
 	public Bomba bombas[];
 	private int vida;
+	private int temVermelha;
+    protected Texture textures[] = new Texture[4];
+	private int keyUp;
+	private int keyDown;
+	private int keyLeft;
+	private int keyRight;
+	private int keyBomb;
 
-    public Player(int posX, int posY, Texture playerTexture,int vida) 
+    public Player(int posX, int posY, String playerTextureFolder,int vida,
+				  int keyUp, int keyRight, int keyDown, int keyLeft, int keyBomb)
     {
         super();
         this.vida = vida;
-        this.texture = playerTexture; 
+		this.direction=0;
+        this.carregarTextura(playerTextureFolder);
+		this.texture = textures[direction];
         this.posX = posX;
         this.posY = posY;
+		this.temVermelha=0;
+
+		this.keyUp=keyUp;
+		this.keyDown=keyDown;
+		this.keyRight=keyRight;
+		this.keyLeft=keyLeft;
+		this.keyBomb=keyBomb;
     }
+
+	public void carregarTextura(String pasta){
+		textures[0] = new Texture(pasta + "\\LEFT.png");
+		textures[1] = new Texture(pasta + "\\RIGHT.png");
+		textures[2] = new Texture(pasta + "\\DOWN.png");
+		textures[3] = new Texture(pasta + "\\UP.png");
+	}
+
 	public void recebeDano(int i)
 	{
 		this.vida -= i;
@@ -44,41 +69,41 @@ public class Player extends ObjetoDoJogo
 	    int pos = -1;
 
 	    // Verifica se a tecla de bomba foi pressionada e a posição da bomba não está ocupada
-	    if (input.isKeyJustPressed(Keys.SHIFT_RIGHT) && !posOcupadas[this.bombPos]) 
+	    if (input.isKeyJustPressed(keyBomb) && !posOcupadas[this.direction])
 	    {
 	        spawnBomb(gridLength); // Coloca uma bomba na posição atual
 	    }
 
 	    // Verifica se as teclas de seta foram pressionadas para mover o jogador
-	    if (input.isKeyJustPressed(Keys.UP) && posY < gridLength - 1) 
+	    if (input.isKeyJustPressed(keyUp) && posY < gridLength - 1)
 	    {
 	        if (!posOcupadas[3]) 
 	        {
 	            this.addToPosY(1); // Move para cima
-	            this.setBombPos(3); // Define a posição da bomba para cima
+	            this.setDirection(3); // Define a posição da bomba para cima
 	        } 
 	        else 
 	        {
 	            pos = 3;
 	        }
 	    } 
-	    else if (input.isKeyJustPressed(Keys.RIGHT) && posX < gridLength - 1) 
+	    else if (input.isKeyJustPressed(keyRight) && posX < gridLength - 1)
 	    {
 	        if (!posOcupadas[1]) 
 	        {
 	            this.addToPosX(1); // Move para a direita
-	            this.setBombPos(1); // Define a posição da bomba para a direita
+	            this.setDirection(1); // Define a posição da bomba para a direita
 	        } 
 	        else 
 	        {
 	            pos = 1; 
 	        }
 	    } 
-	    else if (input.isKeyJustPressed(Keys.DOWN) && posY > 0) 
+	    else if (input.isKeyJustPressed(keyDown) && posY > 0)
 	    {
 	        if (!posOcupadas[2]) 
 	        {
-	            this.setBombPos(2); // Define a posição da bomba para baixo
+	            this.setDirection(2); // Define a posição da bomba para baixo
 	            this.addToPosY(-1); // Move para baixo
 	        } 
 	        else 
@@ -86,11 +111,11 @@ public class Player extends ObjetoDoJogo
 	            pos = 2;
 	        }
 	    } 
-	    else if (input.isKeyJustPressed(Keys.LEFT) && posX > 0) 
+	    else if (input.isKeyJustPressed(keyLeft) && posX > 0)
 	    {
 	        if (!posOcupadas[0]) 
 	        {
-	            this.setBombPos(0); // Define a posição da bomba para a esquerda
+	            this.setDirection(0); // Define a posição da bomba para a esquerda
 	            this.addToPosX(-1); // Move para a esquerda
 	        } 
 	        else 
@@ -98,6 +123,7 @@ public class Player extends ObjetoDoJogo
 	            pos = 0;
 	        }
 	    }
+		this.texture = this.textures[direction];
 	    return pos;
 	}
 
@@ -189,48 +215,68 @@ public class Player extends ObjetoDoJogo
 	    }
 
 	    Bomba bomba = null;
+		int bombPosX, bombPosY;
+		Boolean bombPlace= false;
+		bombPosX = this.posX;
+		bombPosY = this.posY;
 	    // Switch case para determinar a posição adjacente onde a bomba será spawnada
-	    switch (this.bombPos) 
+	    switch (this.direction)
 	    {
 	        case 1: // Direita
 	            if (this.posX + 1 < gridLength) 
 	            {
-	                bomba = new Bomba(this.posX + 1, this.posY);
+	                bombPosX+=1;
+					bombPlace= true;
 	            }
 	            break;
 	        case 2: // Esquerda
 	            if (this.posY - 1 >= 0) 
 	            {
-	                bomba = new Bomba(this.posX, this.posY - 1);
+	                bombPosY-=1;
+					bombPlace= true;
+
 	            }
 	            break;
 	        case 3: // Baixo
 	            if (this.posY + 1 < gridLength) 
 	            {
-	                bomba = new Bomba(this.posX, this.posY + 1);
+	                bombPosY+=1;
+					bombPlace= true;
 	            }
 	            break;
 	        default: // Cima
 	            if (this.posX - 1 >= 0) 
 	            {
-	                bomba = new Bomba(this.posX - 1, this.posY);
+	                bombPosX-=1;
+					bombPlace= true;
 	            } else 
 	            {
 	                // Se nenhuma posição adjacente for válida, spawnar na posição direita, esquerda ou acima, se possível
 	                if (this.posX + 1 < gridLength) 
 	                {
-	                    bomba = new Bomba(this.posX + 1, this.posY);
+	                    bombPosX+=1;
+						bombPlace= true;
 	                } 
 	                else if (this.posY - 1 >= 0) 
 	                {
-	                    bomba = new Bomba(this.posX, this.posY - 1);
+	                    bombPosY-=1;
+						bombPlace= true;
 	                } else if (this.posX - 1 >= 0) 
 	                {
-	                    bomba = new Bomba(this.posX - 1, this.posY);
+	                    bombPosX-=1;
+						bombPlace= true;
 	                }
 	            }
 	            break;
 	    }
+
+		if(bombPlace && this.temVermelha>0){
+			bomba = new BombaVermelha(bombPosX, bombPosY);
+			this.temVermelha-=1;
+		}
+		else if(bombPlace){
+			bomba = new Bomba(bombPosX, bombPosY);
+		}
 
 	    // Adiciona a nova bomba ao array de bombas do jogador
 	    if (bomba != null) 
@@ -250,6 +296,9 @@ public class Player extends ObjetoDoJogo
 	    }
 	}
 
+	public void recebeVermelha(int quant){
+		temVermelha = quant;
+	}
 	public int getVida()
 	{
 		return this.vida;
@@ -259,12 +308,8 @@ public class Player extends ObjetoDoJogo
 		int arr[] = {this.posX,this.posY};
 		return arr;
 	}
-	public int getBomPos()
-	{
-		return this.bombPos;
+	public void setDirection(int dir){
+		this.direction = dir;
 	}
-	public void setBombPos(int pos)
-	{
-		this.bombPos = pos;
-	}
+
 }

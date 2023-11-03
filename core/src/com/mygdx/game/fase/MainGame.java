@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.mygdx.game.Bomberman;
+import com.badlogic.gdx.Input.Keys;
 
 /*"implements" é usado para garantir que a classe MainGameScreen cumpra todos os métodos 
  * definidos na interface Screen. Isso significa que a classe deve fornecer implementações para todos 
@@ -34,8 +35,10 @@ public class MainGame implements Screen
         font = new BitmapFont(Gdx.files.internal("fontLucidaSans.fnt"));
         this.generateCamadaTextures();
         players = new Player[2];
-        players[0] = new Player(0, 0, new Texture("badlogic.jpg"), 2);
-        players[1] = new Player2(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap() - 1, new Texture("player2.png"), 2);
+        players[0] = new Player(0, 0, "player1", 2,
+				Keys.UP, Keys.RIGHT, Keys.DOWN, Keys.LEFT, Keys.SHIFT_RIGHT);
+        players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap() - 1, "player2", 2,
+				Keys.W, Keys.D, Keys.S, Keys.A, Keys.F);
     }
 
     @Override
@@ -73,7 +76,7 @@ public class MainGame implements Screen
                 camadas[3].setObjetoDoJogo(players[i], playersPos[0], playersPos[1]);
 
                 // Gerencia colisões
-                camadas[3].manejaColisao(pos, players[i].getAdjacentPositions(camadas[3].getGridSnap()), players);
+                camadas[3].manejaColisao(pos, players[i].getAdjacentPositions(camadas[3].getGridSnap()), players, players[i]);
 
                 game.batch.begin();
 
