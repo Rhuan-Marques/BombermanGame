@@ -2,10 +2,9 @@ package com.mygdx.game.fase;
 import java.util.List;
 
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Texture;
 
-public class Player extends ObjetoDoJogo
+public class Player extends ObjetoDoJogo implements  Explodivel
 {
 	protected int direction;
 	public Bomba bombas[];
@@ -44,9 +43,9 @@ public class Player extends ObjetoDoJogo
 		textures[3] = new Texture(pasta + "\\UP.png");
 	}
 
-	public void recebeDano(int i)
+	public void recebeExplosao(int dano)
 	{
-		this.vida -= i;
+		this.vida -= dano;
 	}
 	public Boolean taVivo()
 	{

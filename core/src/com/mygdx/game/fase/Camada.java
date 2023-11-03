@@ -315,18 +315,10 @@ public class Camada {
                         Texture player1Texture = players[0].geTexture();
                         Texture player2Texture = players[1].geTexture();
                         ObjetoDoJogo layer1Objeto = this.getObjetoDoJogo(x, y);
-                        if (layer1Objeto != null && (layer1Objeto.geTexture().equals(player1Texture)
-                                || layer1Objeto.geTexture().equals(player2Texture))) 
+                        if (layer1Objeto != null && layer1Objeto instanceof Explodivel)
                         {
                             // Aplica dano ao jogador atingido pela explosão
-                            if (layer1Objeto.geTexture().equals(player2Texture)) 
-                            {
-                                players[1].recebeDano(1);
-                            } 
-                            else 
-                            {
-                                players[0].recebeDano(1);
-                            }
+                            ((Explodivel) layer1Objeto).recebeExplosao(1);
                         } 
                         else 
                         {
