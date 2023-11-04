@@ -23,6 +23,7 @@ public class MainGame implements Screen
     private BitmapFont font;
     private OrthographicCamera font_cam;
     private Player[] players;
+    private Inimigo[] inimigos;
 	private int player_count;
     private Camada[] camadas;
     private Bomberman game;
@@ -40,10 +41,13 @@ public class MainGame implements Screen
         this.generateCamadaTextures();
 		player_count=0;
 		players = new Player[2];
-		players[0] = new Player(0,0, "player1", 2,
+		players[0] = new Player(0,0, "player1", 4,
 				Keys.UP, Keys.RIGHT, Keys.DOWN, Keys.LEFT, Keys.SHIFT_RIGHT);
-		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 2,
+		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 4,
 			Keys.W, Keys.D, Keys.S, Keys.A, Keys.F);
+		inimigos = new Inimigo[1];
+		inimigos[0] = new Inimigo(5,5,3);
+		//camada[3]
     }
 
     @Override
@@ -67,27 +71,45 @@ public class MainGame implements Screen
         {
             for (int i = 0; i < players.length; i++) 
             {
+            	if(inimigos!=null)
+                {
+                	camadas[3].setObjetoDoJogo(null, inimigos[0].getPosX(),inimigos[0].getPosY());
+                	inimigos[0].defaultBehavior(camadas[3], delta);
+                	camadas[3].setObjetoDoJogo(inimigos[0], inimigos[0].getPosX(),inimigos[0].getPosY());
+                
+                	
+                }
+            	
                 int[] playersPos = players[i].getCurrentPos();
                 Boolean[] posOcupadas = camadas[3].posAdjOcupadas(players[i]);
 
                 int pos = players[i].handleInput(Gdx.input, camadas[3].getGridSnap(), posOcupadas);
 
-                camadas[3].verificaBombasNaCamada(players[i], players, delta);
+                camadas[3].verificaBombasNaCamada(players[i],inimigos, delta);
                 camadas[3].explosaoManager(delta);
 
                 // Remove o jogador da posição anterior e o coloca na posição atual
                 camadas[3].setObjetoDoJogo(null, playersPos[0], playersPos[1]);
                 playersPos = players[i].getCurrentPos();
                 camadas[3].setObjetoDoJogo(players[i], playersPos[0], playersPos[1]);
-
+                
                 // Gerencia colisões
                 camadas[3].manejaColisao(pos, players[i].getAdjacentPositions(camadas[3].getGridSnap()), players, players[i]);
+                
+                
+                if(inimigos != null) {
+                    for (int a = 0; a < inimigos.length; a++) {
+                        if (inimigos[a] != null && inimigos[a].getExploded()) {
+                            inimigos[a] = null;
+                        }
+                    }
+                }
 
                 game.batch.begin();
 
                 // Renderiza as camadas do jogo
                 this.renderizaCamadasdoGame();
-
+                
                 game.batch.end();
             }
         } 

@@ -7,13 +7,14 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Bomba extends ObjetoDoJogo implements Explodivel
 {
-	private static float tempoDeExplosao = 0.5f;
-    private float contador;
-    private static Texture bombaTexture = new Texture("bomba.png");
+	private float tempoDeExplosao = 0.5f;
+    protected float contador;
+    private  Texture bombaTexture = new Texture("bomba.png");
     private int tamanhoDaExplosao;
 	private int vida;
 	private boolean piercing;
 	private int damage;
+	private Boolean exploded;
     public Bomba(int posX, int posY)
     {
     	this.tamanhoDaExplosao = 3;
@@ -23,6 +24,7 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
 		this.piercing=false;
         this.posX = posX;
         this.posY = posY;
+        this.exploded = false;
         this.setTexture(bombaTexture);
     }
 	@Override
@@ -38,7 +40,14 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
 		this.contador=this.tempoDeExplosao;
 		return this;
 	}
-
+	public float getTempoDeExplosao()
+	{
+		return this.tempoDeExplosao;
+	}
+	public void setExploded(Boolean b)
+	{
+		this.exploded = b;
+	}
 	public int getTamanhoExplosao()
 	{
 		return this.tamanhoDaExplosao;
@@ -54,6 +63,7 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
 		if(this.contador >= tempoDeExplosao)
 		{
 			this.contador = 0;
+			this.exploded = true;
 			return true;
 		}
 		return false;
@@ -111,7 +121,10 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
         }
         return indices;
     }
-
+	public boolean getExploded()
+	{
+		return this.exploded;
+	}
 	public boolean getPiercieng(){
 		return piercing;
 	}

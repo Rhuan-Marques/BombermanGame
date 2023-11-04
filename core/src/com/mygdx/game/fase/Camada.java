@@ -121,10 +121,10 @@ public class Camada {
      * @param player Jogador cujas posições adjacentes estão sendo verificadas.
      * @return Um array de Boolean indicando se as posições adjacentes estão ocupadas (true) ou não (false).
      */
-    public Boolean[] posAdjOcupadas(Player player) 
+    public Boolean[] posAdjOcupadas(ObjetoDoJogo obj) 
     {
         // Obtém as posições adjacentes do jogador
-        int[][] posAdj = player.getAdjacentPositions(this.getGridSnap());
+        int[][] posAdj = obj.getAdjacentPositions(this.getGridSnap());
         
         // Array para armazenar se as posições adjacentes estão ocupadas ou não
         Boolean[] posOcupadas = new Boolean[4];
@@ -144,6 +144,27 @@ public class Camada {
         
         // Retorna o array indicando se as posições adjacentes estão ocupadas ou não
         return posOcupadas;
+    }
+    public Boolean playerOnPosAdj(Inimigo inimigo)
+    {
+    	// Obtém as posições adjacentes do inimigo
+        int[][] posAdj = inimigo.getAdjacentPositions(this.getGridSnap());
+        
+        // Array para armazenar se as posições adjacentes estão ocupadas ou não
+        Boolean playerOnAdj = false;
+
+        // Verifica as posições adjacentes ocupadas
+        for (int h = 0; h < posAdj.length; h++) 
+        {
+            // Verifica se a posição adjacente não é nula e se há um player na posição
+            if (posAdj[h] != null && this.getObjetoDoJogo(posAdj[h][0], posAdj[h][1]) instanceof Player)
+            {
+            	playerOnAdj = true; // Posição ocupada
+            	break;
+            }
+        }
+        
+        return playerOnAdj;
     }
 
     /**
@@ -278,72 +299,90 @@ public class Camada {
      * aplica danos aos jogadores ou cria explosões no mapa conforme necessário.
      * 
      * @param currentPlayer Jogador atual cujas bombas estão sendo verificadas.
-     * @param players       Array de jogadores no jogo.
      * @param delta         O tempo decorrido desde o último frame.
      */
-    public void verificaBombasNaCamada(Player currentPlayer, Player players[], float delta) 
-    {
+    @SuppressWarnings("unused")
+	public void verificaBombasNaCamada(Player currentPlayer,Inimigo inimigos[], float delta) {
         // Obtém a lista de bombas do jogador atual
-        Bomba bombas[] = currentPlayer.bombas;
+		Bomba bombas[] = currentPlayer.bombas;
+            
         if (bombas != null) 
         {
-            // Itera sobre cada bomba do jogador atual
+            // Itera sobre cada bomba
             for (int h = 0; h < bombas.length; h++) 
             {
-                // Obtém a posição da bomba no mapa
-                int[] pos = bombas[h].getPosicao();
-                
                 // Obtém as coordenadas das explosões causadas pela bomba
-                List<int[]> localExplosao = currentPlayer.updateBombaTime(delta, this.getGridSnap(), bombas[h]);
-                //Verifica se bomba explodiu
-                if (localExplosao != null) 
-                {
-                    // Processa explosões
-                    for (int j = 0; j < localExplosao.size(); j++) 
-                    {
-                        int[] explosionCoords = localExplosao.get(j);
-                        int x = explosionCoords[0];
-                        int y = explosionCoords[1];
-                        if (x == -1 || y == -1) 
-                        {
-                            // Ignora coordenadas inválidas
-                            continue;
-                        }
-
-                        ObjetoDoJogo layer1Objeto = this.getObjetoDoJogo(x, y);
-                        if (layer1Objeto != null && layer1Objeto instanceof Explodivel)
-                        {
-                            // Aplica dano ao objeto atingido
-                            ObjetoDoJogo resultado = ((Explodivel) layer1Objeto).recebeExplosao(bombas[h].getDamage());
-                            if(resultado != layer1Objeto){
-                                this.setObjetoDoJogo(resultado, x, y);
-                            }
-                            //PULA AS PROXIMAS EXPLOSOES PARA BOMBAS QUE AS EXPLOSOES SAO CONECTADAS
-                            if(bombas[h].getPiercieng() == false){
-                                j = (((int) j / bombas[h].getTamanhoExplosao()) + 1) * bombas[h].getTamanhoExplosao();
-                                j--;
-                            }
-
-                        } 
-                        else 
-                        {
-                            // Cria uma explosão no mapa se não houver objeto explodivel
-                            ObjetoDoJogo objEx = new Explosao(x, y);
-                            this.setObjetoDoJogo(objEx, x, y);
-                        }
-                    }
-                    // Remove a bomba após a explosão
-                    this.setObjetoDoJogo(null, pos[0], pos[1]);
-                } 
-                else 
-                {
-                    // Atualiza a posição da bomba no mapa
-                    this.setObjetoDoJogo(bombas[h], pos[0], pos[1]);
-                }
+                currentPlayer.updateBombaTime(delta, this.getGridSnap(), bombas[h]);
+                this.InstanciaExplosao(bombas[h]);
+            }
+        }
+        if(inimigos!=null)
+        {
+        	for (Inimigo i: inimigos) 
+            {
+                this.InstanciaExplosao(i);
             }
         }
     }
+    public void InstanciaExplosao(Bomba bombh)
+    {
+    	// Obtém a posição da bomba no mapa
+        int[] pos = bombh.getPosicao();
+        
+        // Obtém as coordenadas das explosões causadas pela bomba
+        List<int[]> localExplosao = null;
+        if(bombh.getExploded())
+        {
+        	localExplosao = bombh.obterIndicesDaExplosao(this.getGridSnap());
+        	bombh.setExploded(false);
+        }
+        //Verifica se bomba explodiu
+        if (localExplosao != null) 
+        {
+            // Processa explosões
+            for (int j = 0; j < localExplosao.size(); j++) 
+            {
+                int[] explosionCoords = localExplosao.get(j);
+                int x = explosionCoords[0];
+                int y = explosionCoords[1];
+                if (x == -1 || y == -1) 
+                {
+                    // Ignora coordenadas inválidas
+                    continue;
+                }
 
+                ObjetoDoJogo layer1Objeto = this.getObjetoDoJogo(x, y);
+                if (layer1Objeto != null && layer1Objeto instanceof Explodivel)
+                {
+                    // Aplica dano ao objeto atingido
+                    ObjetoDoJogo resultado = ((Explodivel) layer1Objeto).recebeExplosao(bombh.getDamage());
+                    if(resultado != layer1Objeto){
+                        this.setObjetoDoJogo(resultado, x, y);
+                    }
+                    //PULA AS PROXIMAS EXPLOSOES PARA BOMBAS QUE AS EXPLOSOES SAO CONECTADAS
+                    if(bombh.getPiercieng() == false){
+                        j = (((int) j / bombh.getTamanhoExplosao()) + 1) * bombh.getTamanhoExplosao();
+                        j--;
+                    }
+
+                } 
+                else 
+                {
+                    // Cria uma explosão no mapa se não houver objeto explodivel
+                    ObjetoDoJogo objEx = new Explosao(x, y);
+                    this.setObjetoDoJogo(objEx, x, y);
+                }
+            }
+            // Remove a bomba após a explosão
+            this.setObjetoDoJogo(null, pos[0], pos[1]);
+            bombh = null;
+        }
+        else 
+        {
+            // Atualiza a posição da bomba no mapa
+            this.setObjetoDoJogo(bombh, pos[0], pos[1]);
+        }
+    }
 
     /**
      * Gerencia a lógica de explosões no jogo. Monitora e atualiza as explosões no mapa
