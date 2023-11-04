@@ -3,6 +3,7 @@ package com.mygdx.game.fase;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -23,8 +24,8 @@ public class MainGame implements Screen
     private BitmapFont font;
     private OrthographicCamera font_cam;
     private Player[] players;
-    private Inimigo[] inimigos;
-	private int player_count;
+    private ArrayList<Inimigo> inimigosList;
+	private int playerCount, numeroDeInimigos;
     private Camada[] camadas;
     private Bomberman game;
     private boolean gameOver;
@@ -39,15 +40,15 @@ public class MainGame implements Screen
         this.game = game;
         font = new BitmapFont(Gdx.files.internal("fontLucidaSans.fnt"));
         this.generateCamadaTextures();
-		player_count=0;
+		playerCount=0;
+		numeroDeInimigos = 3;
 		players = new Player[2];
-		players[0] = new Player(0,0, "player1", 4,
+		players[0] = new Player(0,0, "player1", 2,
 				Keys.UP, Keys.RIGHT, Keys.DOWN, Keys.LEFT, Keys.SHIFT_RIGHT);
-		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 4,
+		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 2,
 			Keys.W, Keys.D, Keys.S, Keys.A, Keys.F);
-		inimigos = new Inimigo[1];
-		inimigos[0] = new Inimigo(5,5,3);
-		//camada[3]
+		inimigosList = new ArrayList<>();
+		inimigosList = camadas[3].instanciarInimigosAleatoriamente(numeroDeInimigos);
     }
 
     @Override
@@ -66,26 +67,40 @@ public class MainGame implements Screen
 
         // Verifica se o jogo acabou
         gameOver = (!players[0].taVivo() || !players[1].taVivo());
+        gameOver = (!players[0].taVivo() || !players[1].taVivo());
+    	if(inimigosList!=null) 
+    	{
+        for (int i = 0; i < inimigosList.size(); i++) 
+        {
+            Inimigo inimigo = inimigosList.get(i);
+            if (inimigo != null) 
+            {
+                camadas[3].setObjetoDoJogo(null, inimigo.getPosX(), inimigo.getPosY());
+                inimigo.defaultBehavior(camadas[3], delta);
+                camadas[3].setObjetoDoJogo(inimigo, inimigo.getPosX(), inimigo.getPosY());
 
+                if (inimigo.getExpl()) 
+                {
+                	camadas[3].setObjetoDoJogo(null, inimigo.getPosX(), inimigo.getPosY());
+                    inimigosList.remove(i);
+                    i--; // Atualiza o índice após remover um inimigo
+                }
+            }
+        }
+    	}
         if (!gameOver) 
         {
+           
             for (int i = 0; i < players.length; i++) 
             {
-            	if(inimigos!=null)
-                {
-                	camadas[3].setObjetoDoJogo(null, inimigos[0].getPosX(),inimigos[0].getPosY());
-                	inimigos[0].defaultBehavior(camadas[3], delta);
-                	camadas[3].setObjetoDoJogo(inimigos[0], inimigos[0].getPosX(),inimigos[0].getPosY());
-                
-                	
-                }
+            	
             	
                 int[] playersPos = players[i].getCurrentPos();
                 Boolean[] posOcupadas = camadas[3].posAdjOcupadas(players[i]);
 
                 int pos = players[i].handleInput(Gdx.input, camadas[3].getGridSnap(), posOcupadas);
 
-                camadas[3].verificaBombasNaCamada(players[i],inimigos, delta);
+                camadas[3].verificaBombasNaCamada(players[i],inimigosList, delta);
                 camadas[3].explosaoManager(delta);
 
                 // Remove o jogador da posição anterior e o coloca na posição atual
@@ -97,13 +112,7 @@ public class MainGame implements Screen
                 camadas[3].manejaColisao(pos, players[i].getAdjacentPositions(camadas[3].getGridSnap()), players, players[i]);
                 
                 
-                if(inimigos != null) {
-                    for (int a = 0; a < inimigos.length; a++) {
-                        if (inimigos[a] != null && inimigos[a].getExploded()) {
-                            inimigos[a] = null;
-                        }
-                    }
-                }
+               
 
                 game.batch.begin();
 

@@ -48,6 +48,23 @@ public class Camada {
             }
         }
     }
+    public ArrayList<Inimigo> instanciarInimigosAleatoriamente(int n) 
+    {
+        ArrayList<Inimigo> inimigos = new ArrayList<>();
+        Random random = new Random();
+
+        for (int i = 1; i < this.getGridSnap() - 1 && inimigos.size() < n; i++) 
+        {
+            int posX = random.nextInt(this.getGridSnap() - 1) + 1; // Gera posição X aleatória
+            int posY = i; // Posição Y é a linha atual (não na primeira ou última linha)
+            int direcao = random.nextInt(4); // Gera uma direção aleatória (0 a 3)
+
+            Inimigo inimigo = new Inimigo(posX, posY, direcao); // Crie um novo inimigo com direção aleatória
+            inimigos.add(inimigo); // Adicione o inimigo à lista
+        }
+
+        return inimigos;
+    }
 
     /**
      * Gera texturas detalhadas em posições específicas do grid.
@@ -302,7 +319,7 @@ public class Camada {
      * @param delta         O tempo decorrido desde o último frame.
      */
     @SuppressWarnings("unused")
-	public void verificaBombasNaCamada(Player currentPlayer,Inimigo inimigos[], float delta) {
+	public void verificaBombasNaCamada(Player currentPlayer,ArrayList<Inimigo> inimigos, float delta) {
         // Obtém a lista de bombas do jogador atual
 		Bomba bombas[] = currentPlayer.bombas;
             
@@ -320,7 +337,8 @@ public class Camada {
         {
         	for (Inimigo i: inimigos) 
             {
-                this.InstanciaExplosao(i);
+        		if(i!= null)
+        			this.InstanciaExplosao(i);
             }
         }
     }
@@ -333,8 +351,15 @@ public class Camada {
         List<int[]> localExplosao = null;
         if(bombh.getExploded())
         {
+        	if(bombh instanceof Inimigo && ((Inimigo) bombh).getExpl() == true )
+        	{
+        		return;
+        	}
+        	else if(bombh instanceof Inimigo)
+        	{
+        		((Inimigo) bombh).setExpl(true);
+        	}
         	localExplosao = bombh.obterIndicesDaExplosao(this.getGridSnap());
-        	bombh.setExploded(false);
         }
         //Verifica se bomba explodiu
         if (localExplosao != null) 

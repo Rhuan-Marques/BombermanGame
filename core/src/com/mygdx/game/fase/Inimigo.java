@@ -12,20 +12,29 @@ public class Inimigo extends BombaAzul
 	private Boolean explosionMode;
 	private float timeMove;
 	private int moveDirection;
+	private Boolean expl;
 	 public Inimigo(int posX, int posY,int moveDirection)
     {
         super(posX, posY);
-        this.setTamanhoExplosao(5);
+        this.setTamanhoExplosao(3);
         this.setTexture(sprite[0]);
         this.setPiercing(true);
-        this.setDamage(1);//nao sei pq ta dando hit kill, mas ok
+        this.setDamage(1);
         this.moveDirection = moveDirection;
         this.explosionMode = false;
         this.countMove = 0;
         this.timeMove = 1f;
+        this.expl = false;
     }
 
-	 
+	 public void setExpl(boolean b)
+	 {
+		 this.expl = b;
+	 }
+	 public Boolean getExpl()
+	 {
+		 return this.expl;
+	 }
 	 public void defaultBehavior(Camada camada, float delta)
 	 {
 		 
@@ -105,11 +114,11 @@ public class Inimigo extends BombaAzul
 		{
 			this.contador += num;
 			float porcentagem = (100* this.contador)/this.getTempoDeExplosao();
-			if(porcentagem > 5)
+			if(porcentagem <= 5)
 			{
 				this.setTexture(this.sprite[1]);
 			}
-			else if(porcentagem > 50)
+			else if(porcentagem > 10)
 			{
 				Texture x;
 				Random random = new Random();
@@ -118,10 +127,10 @@ public class Inimigo extends BombaAzul
 		        int randomNumber = random.nextInt(4);   // Gera um número aleatório de 0 a 3
 		        
 		        // Aplica as probabilidades aos índices do array sprite[]
-		        if (randomNumber == 0) {
+		        if (randomNumber == 0 || randomNumber == 1) {
 		            // 50% de chance para o índice 1
 		            x = sprite[1];
-		        } else if (randomNumber == 1 || randomNumber == 2) {
+		        } else if (randomNumber == 2) {
 		            // 25% de chance para o índice 2
 		            x = sprite[2];
 		        } else {
