@@ -1,23 +1,33 @@
 package com.mygdx.game.fase;
 import com.badlogic.gdx.graphics.Texture;
-public class Drop_BombaVerm extends ObjetoDoJogo implements Item{
-    private static Texture itemBombaV = new Texture("Drop_BombaVermelha.png");
-    private String tipo;
-    public static Texture getTexture()
-    {
-        return itemBombaV;
-    }
-    public Drop_BombaVerm(int posX, int posY, String tipo)
+public class Item extends ObjetoDoJogo{
+    private int tipo;
+    public Item(int posX, int posY, int tipo)
     {
         this.setPosX(posX);
         this.setPosY(posY);
-        this.setTexture(itemBombaV);
-        this.tipo = new String;
+        this.setTextureByType(tipo);
+        this.tipo = tipo;
     }
 
-    @Override
-    public void recebido(Player player) {
-        player.recebeBombaEspecial(this.tipo);
+    void setTextureByType(int tipo){
+        String path = "Items\\Item_";
+        if(tipo==1){
+            path+="BombaVermelha";
+        }
+        else if(tipo==2){
+            path+="BombaAzul";
+        }
+        else if(tipo==11){
+            path+="Bota";
+        }
+        else if(tipo==12){
+            path+="SacoBomba";
+        }
+        this.setTexture(new Texture(path+".png"));
     }
 
+    public int getTipo(){
+        return tipo;
+    }
 }

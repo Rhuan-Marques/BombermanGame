@@ -1,8 +1,11 @@
 package com.mygdx.game.fase;
 
 public interface Explodivel {
-    int vida=2;
-    void recebeExplosao(int dano);
+    Integer vida = 1;
+    //Funcao que retorna um ObjetoDoJogo ao receber dano
+    //Retorna null se nada acontecer
+    //Retorna um objeto pra substuir a si mesma caso contrario
+    ObjetoDoJogo recebeExplosao(int dano);
+    ObjetoDoJogo acabaVida();
 
-    void acabaVida();
 }

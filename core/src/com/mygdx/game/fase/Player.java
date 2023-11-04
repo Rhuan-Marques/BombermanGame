@@ -1,4 +1,5 @@
 package com.mygdx.game.fase;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Input;
@@ -8,9 +9,11 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 {
 	protected int direction;
 	public Bomba bombas[];
-	private int vida;
-	private int temVermelha;
-    protected Texture textures[] = new Texture[4];
+	private Integer vida;
+	private int item_Boot;
+	private int item_tipoBomba;
+	private int item_SacoBomba;
+    protected Texture textures[] = new Texture[5];
 	private int keyUp;
 	private int keyDown;
 	private int keyLeft;
@@ -27,8 +30,9 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		this.texture = textures[direction];
         this.posX = posX;
         this.posY = posY;
-		this.temVermelha=0;
-
+		this.item_tipoBomba = 0;
+		this.item_Boot = 0;
+		this.item_SacoBomba = 1;
 		this.keyUp=keyUp;
 		this.keyDown=keyDown;
 		this.keyRight=keyRight;
@@ -41,18 +45,27 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		textures[1] = new Texture(pasta + "\\RIGHT.png");
 		textures[2] = new Texture(pasta + "\\DOWN.png");
 		textures[3] = new Texture(pasta + "\\UP.png");
+		textures[4] = new Texture(pasta + "\\DEAD.png");
 	}
-
-	public void recebeExplosao(int dano)
+	@Override
+	public ObjetoDoJogo recebeExplosao(int dano)
 	{
 		this.vida -= dano;
+		if(this.vida > 0)
+			return this;
+		else
+			return acabaVida();
 	}
-	public Boolean taVivo()
-	{
-		if(this.vida >= 1)
-		{
+
+	@Override
+	public ObjetoDoJogo acabaVida() {
+		this.texture = textures[4];
+		return this;
+	}
+
+	public boolean taVivo(){
+		if(vida>0)
 			return true;
-		}
 		return false;
 	}
 	/**
@@ -165,39 +178,31 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	 * @param gridLength O comprimento do grid do jogo.
 	 * @return Lista de int[] representando os índices onde a explosão ocorrerá, ou null se não houver explosão.
 	 */
-	public List<int[]> updateBombasTime(float delta, int gridLength) 
+	public List<int[]> updateBombaTime(float delta, int gridLength, Bomba bomba)
 	{
-	    // Verifica se o jogador possui bombas
-	    if (bombas != null) 
-	    {
-	        // Itera sobre as bombas do jogador
-	        for (int i = 0; i < this.bombas.length; i++) 
-	        {
-	            // Verifica se a bomba não é nula
-	            if (this.bombas[i] != null) 
-	            {
-	                // Adiciona o delta ao contador da bomba
-	                if (this.bombas[i].addToContador(delta)) 
-	                {
-	                    // Obtém a matriz de índices da explosão
-	                    List<int[]> matriz = this.bombas[i].obterIndicesDaExplosao(gridLength);
-	                    
-	                    // Remove a bomba da lista de bombas do jogador
-	                    Bomba newBombasBomba[] = new Bomba[this.bombas.length - 1];
-	                    for (int j = 1; j < this.bombas.length; j++) 
-	                    {
-	                        newBombasBomba[j - 1] = this.bombas[j];
-	                    }
-	                    this.bombas = newBombasBomba;
-	                    
-	                    // Retorna a matriz de índices da explosão
-	                    return matriz;
-	                }
-	            }
-	        }
-	    }
-	    // Retorna null se não houver explosão
-	    return null;
+		// Verifica se a bomba não é nula
+		if (bomba != null)
+		{
+			// Adiciona o delta ao contador da bomba
+			if (bomba.addToContador(delta))
+			{
+				// Obtém a matriz de índices da explosão
+				List<int[]> matriz = bomba.obterIndicesDaExplosao(gridLength);
+
+				// Remove a bomba da lista de bombas do jogador
+				Bomba newBombasBomba[] = new Bomba[this.bombas.length - 1];
+				for (int j = 0; j < this.bombas.length; j++)
+				{
+					if(bombas[j] != bomba)
+						newBombasBomba[j - 1] = this.bombas[j];
+				}
+				this.bombas = newBombasBomba;
+				// Retorna a matriz de índices da explosão
+				return matriz;
+			}
+		}
+		// Retorna null se não houver explosão
+		return null;
 	}
 
 	/**
@@ -208,7 +213,7 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	public void spawnBomb(int gridLength) 
 	{
 	    // Verifica se o jogador já possui uma bomba no mapa
-	    if (this.bombas != null && this.bombas.length >= 1) 
+	    if (this.bombas != null && this.bombas.length >= item_SacoBomba)
 	    {
 	        return; // Se sim, não spawna uma nova bomba
 	    }
@@ -268,14 +273,18 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	            }
 	            break;
 	    }
+		if(bombPlace){
+			if(item_tipoBomba==0){
+				bomba = new Bomba(bombPosX, bombPosY);
+			}
+			else if(item_tipoBomba==1){
+				bomba = new BombaVermelha(bombPosX, bombPosY);
+			}
+			else if(item_tipoBomba==2){
+				bomba = new BombaAzul(bombPosX, bombPosY);
+			}
+		}
 
-		if(bombPlace && this.temVermelha>0){
-			bomba = new BombaVermelha(bombPosX, bombPosY);
-			this.temVermelha-=1;
-		}
-		else if(bombPlace){
-			bomba = new Bomba(bombPosX, bombPosY);
-		}
 
 	    // Adiciona a nova bomba ao array de bombas do jogador
 	    if (bomba != null) 
@@ -295,8 +304,15 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	    }
 	}
 
-	public void recebeVermelha(int quant){
-		temVermelha = quant;
+	public void recebeItem(int tipo){
+		if(tipo<10){
+			item_tipoBomba = tipo;
+		}
+		else if(tipo==11)
+			this.item_Boot+=1;
+		else if (tipo==12) {
+			item_SacoBomba+=1;
+		}
 	}
 	public int getVida()
 	{
@@ -309,6 +325,10 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	}
 	public void setDirection(int dir){
 		this.direction = dir;
+	}
+
+	public int getKickPower(){
+		return item_Boot;
 	}
 
 }

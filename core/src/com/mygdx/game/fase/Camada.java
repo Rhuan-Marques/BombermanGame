@@ -107,11 +107,18 @@ public class Camada {
             for(int j = 1; j < this.getGridSnap(); j += 2)
             {
                 // Cria um objeto do jogo com textura de telha quebrável e define sua posição no grid.
-                ObjetoDoJogo objeto = new ObjetoDoJogo();
-                objeto.setTexture(Camada.breakableTile);
-                objeto.setPosX(i);
-                objeto.setPosY(j);
-
+                Random random = new Random();
+                int vida;
+                int chance = random.nextInt(100)+1;
+                if(chance<=5)
+                    vida = 3;
+                else if(chance<=25)
+                    vida = 2;
+                else if(chance<=75)
+                    vida = 1;
+                else
+                    continue;
+                ObjetoDoJogo objeto = new Parede(i, j, vida);
                 // Define o objeto do jogo no grid na posição atual.
                 this.setObjetoDoJogo(objeto, i, j);
             }
@@ -165,9 +172,11 @@ public class Camada {
             ObjetoDoJogo objetoDoJogo = this.getObjetoDoJogo(posAdj[pos][0], posAdj[pos][1]);
 
             // Verifica se o objeto na posição é uma bomba
-            if (objetoDoJogo.geTexture().equals(Bomba.getBombaTexture()) ||
-                    objetoDoJogo.geTexture().equals(BombaVermelha.getBombaTexture()))
+            if (objetoDoJogo instanceof Bomba)
             {
+                // Calcula quantas posicoes o player pode chutar bomba
+                int distLimit = current_player.getKickPower();
+
                 // Remove a bomba da posição de colisão
                 this.setObjetoDoJogo(null, posAdj[pos][0], posAdj[pos][1]);
 
@@ -176,9 +185,9 @@ public class Camada {
                 int newPosY = posAdj[pos][1];
                 switch (pos) {
                     case 0: // Posição à esquerda
-                        // Move a bomba para a esquerda até encontrar um obstáculo ou atingir o limite de 3 posições
+                        // Move a bomba para a esquerda até encontrar um obstáculo ou atingir o limite de posições
                         int i = 0;
-                        while (i < 3 && this.getObjetoDoJogo(newPosX - 1, newPosY) == null) 
+                        while (i < distLimit && this.getObjetoDoJogo(newPosX - 1, newPosY) == null)
                         {
                             newPosX -= 1;
                             int newPos[] = this.limitarPosicaoNoGrid(newPosX, newPosY);
@@ -187,9 +196,9 @@ public class Camada {
                         }
                         break;
                     case 1: // Posição à direita
-                        // Move a bomba para a direita até encontrar um obstáculo ou atingir o limite de 3 posições
+                        // Move a bomba para a direita até encontrar um obstáculo ou atingir o limite de posições
                         i = 0;
-                        while (i < 3 && this.getObjetoDoJogo(newPosX + 1, newPosY) == null) 
+                        while (i < distLimit && this.getObjetoDoJogo(newPosX + 1, newPosY) == null)
                         {
                             newPosX += 1;
                             int newPos[] = this.limitarPosicaoNoGrid(newPosX, newPosY);
@@ -198,9 +207,9 @@ public class Camada {
                         }
                         break;
                     case 2: // Posição abaixo
-                        // Move a bomba para baixo até encontrar um obstáculo ou atingir o limite de 3 posições
+                        // Move a bomba para baixo até encontrar um obstáculo ou atingir o limite de posições
                         i = 0;
-                        while (i < 3 && this.getObjetoDoJogo(newPosX, newPosY - 1) == null) 
+                        while (i < distLimit && this.getObjetoDoJogo(newPosX, newPosY - 1) == null)
                         {
                             newPosY -= 1;
                             int newPos[] = this.limitarPosicaoNoGrid(newPosX, newPosY);
@@ -209,9 +218,9 @@ public class Camada {
                         }
                         break;
                     case 3: // Posição acima
-                        // Move a bomba para cima até encontrar um obstáculo ou atingir o limite de 3 posições
+                        // Move a bomba para cima até encontrar um obstáculo ou atingir o limite de posições
                         i = 0;
-                        while (i < 3 && this.getObjetoDoJogo(newPosX, newPosY + 1) == null) 
+                        while (i < distLimit && this.getObjetoDoJogo(newPosX, newPosY + 1) == null)
                         {
                             newPosY += 1;
                             int newPos[] = this.limitarPosicaoNoGrid(newPosX, newPosY);
@@ -244,9 +253,9 @@ public class Camada {
                 objetoDoJogo.setPosY(newPosY);
                 this.setObjetoDoJogo(objetoDoJogo, newPosX, newPosY);
             }
-            //Checa se o Player colediu com um drop de bomba
-            if (objetoDoJogo.geTexture().equals(Drop_BombaVerm.getTexture())){
-                current_player.recebeVermelha(1);
+            //Checa se o Player colediu com um item
+            if (objetoDoJogo instanceof Item){
+                current_player.recebeItem(((Item)objetoDoJogo).getTipo());
                 this.setObjetoDoJogo(null, posAdj[pos][0], posAdj[pos][1]);
             }
 
@@ -295,7 +304,7 @@ public class Camada {
                 int[] pos = bombas[h].getPosicao();
                 
                 // Obtém as coordenadas das explosões causadas pela bomba
-                List<int[]> localExplosao = currentPlayer.updateBombasTime(delta, this.getGridSnap());
+                List<int[]> localExplosao = currentPlayer.updateBombaTime(delta, this.getGridSnap(), bombas[h]);
                 //Verifica se bomba explodiu
                 if (localExplosao != null) 
                 {
@@ -311,33 +320,26 @@ public class Camada {
                             continue;
                         }
 
-                        // Verifica se há um jogador na posição da explosão
-                        Texture player1Texture = players[0].geTexture();
-                        Texture player2Texture = players[1].geTexture();
                         ObjetoDoJogo layer1Objeto = this.getObjetoDoJogo(x, y);
                         if (layer1Objeto != null && layer1Objeto instanceof Explodivel)
                         {
-                            // Aplica dano ao jogador atingido pela explosão
-                            ((Explodivel) layer1Objeto).recebeExplosao(1);
+                            // Aplica dano ao objeto atingido
+                            ObjetoDoJogo resultado = ((Explodivel) layer1Objeto).recebeExplosao(1);
+                            if(resultado != layer1Objeto){
+                                this.setObjetoDoJogo(resultado, x, y);
+                            }
+                            //PULA AS PROXIMAS EXPLOSOES PARA BOMBAS QUE AS EXPLOSOES SAO CONECTADAS
+                            if(bombas[h].getPiercieng() == false){
+                                j = (((int) j / bombas[h].getTamanhoExplosao()) + 1) * bombas[h].getTamanhoExplosao();
+                                j--;
+                            }
+
                         } 
                         else 
                         {
-                            // Cria uma explosão no mapa se não houver jogador na posição
+                            // Cria uma explosão no mapa se não houver objeto explodivel
                             ObjetoDoJogo objEx = new Explosao(x, y);
                             this.setObjetoDoJogo(objEx, x, y);
-                        }
-
-                        // Se bater em alguma coisa da mesma camada, destrói e para de instanciar explosões nessa direção
-                        if (layer1Objeto != null) 
-                        {
-                            j = (((int) j / bombas[h].getTamanhoExplosao()) + 1) * bombas[h].getTamanhoExplosao();
-                            j--;
-                            Random random = new Random();
-                            int chance = random.nextInt(100)+1;
-                            if(chance<=20){
-                                ObjetoDoJogo drop = new Drop_BombaVerm(x, y);
-                                this.setObjetoDoJogo(drop, x, y);
-                            }
                         }
                     }
                     // Remove a bomba após a explosão
