@@ -1,5 +1,8 @@
 package com.mygdx.game.fase;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -20,6 +23,7 @@ public class MainGame implements Screen
     private BitmapFont font;
     private OrthographicCamera font_cam;
     private Player[] players;
+	private int player_count;
     private Camada[] camadas;
     private Bomberman game;
     private boolean gameOver;
@@ -34,11 +38,12 @@ public class MainGame implements Screen
         this.game = game;
         font = new BitmapFont(Gdx.files.internal("fontLucidaSans.fnt"));
         this.generateCamadaTextures();
-        players = new Player[2];
-        players[0] = new Player(0, 0, "player1", 2,
+		player_count=0;
+		players = new Player[2];
+		players[0] = new Player(0,0, "player1", 2,
 				Keys.UP, Keys.RIGHT, Keys.DOWN, Keys.LEFT, Keys.SHIFT_RIGHT);
-        players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap() - 1, "player2", 2,
-				Keys.W, Keys.D, Keys.S, Keys.A, Keys.F);
+		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 2,
+			Keys.W, Keys.D, Keys.S, Keys.A, Keys.F);
     }
 
     @Override
@@ -171,9 +176,10 @@ public class MainGame implements Screen
 
 	public void generateCamadaTextures() 
 	{
-	    for (int i = 0; i < camadas.length; i++) 
+	    int camada_size=10;
+		for (int i = 0; i < camadas.length; i++)
 	    {
-	        camadas[i] = new Camada(10);
+	        camadas[i] = new Camada(camada_size);
 	    }
 	    // Camada de detalhes do mapa PLACEHOLDER
 	    camadas[1].generateDetailTextures();
@@ -183,11 +189,80 @@ public class MainGame implements Screen
 
 	    // Gerando areia abaixo do tile quebrável
 	    camadas[0].generateSandTextures();
-	    // Gerando tile quebraveis 
-	    camadas[3].generateBreakableTileTextures();
+
+	    // Gerando tile quebraveis
+		int[][] matrix;
+		try {
+			matrix = importLayout(camada_size, null);
+		}catch(IOException e) {
+			e.printStackTrace();
+			matrix = randomLayout(camada_size);
+		}
+
+		camadas[3].setBlockLayout(matrix);
+
 	}
 
-	@Override
+	public int[][] importLayout(int size, String filepath) throws IOException{
+		int[][] matrix = new int[size][size];
+		if(filepath != null) {
+			BufferedReader reader = new BufferedReader(new FileReader(filepath));
+			String line;
+			int row = 0;
+			while ((line = reader.readLine()) != null && row < size) {
+				for (int col = 0; col < Math.min(size, line.length()); col++) {
+					char c = line.charAt(col);
+					if (Character.isDigit(c)) {
+						matrix[row][col] = Character.getNumericValue(c);
+					} else {
+						matrix[row][col] = 0;
+					}
+				}
+				row++;
+			}
+				reader.close();
+				matrix[0][0] = 0;
+				matrix[size-1][size-1] = 0;
+				return matrix;
+		}
+		return randomLayout(size);
+	}
+
+	public int[][] randomLayout(int size){
+		int matrix[][] = new int[size][size];
+		for(int i=0; i<size;i++) {
+			for(int j=0; j<size;j++) {
+				if((i==0 && j<3) ||
+					(i<3 && j==0) ||
+					(i==size-1 && j>size-4) ||
+					(i>size-4 && j==size-1)){
+					matrix[i][j] = 0;
+					continue;
+				}
+				Random random = new Random();
+				int chance = random.nextInt(100)+1;
+				if(chance<=45) matrix[i][j] = 1;
+				else if(chance<=55) matrix[i][j] = 2;
+				else if(chance<=65) matrix[i][j] = 3;
+				else matrix[i][j] = 0;
+			}
+		}
+		matrix[0][0] = 0;
+		matrix[size-1][size-1] = 0;
+		return matrix;
+	}
+
+	public static void printMatrix(int[][] matrix) {
+		for (int[] row : matrix) {
+			for (int digit : row) {
+				System.out.print(digit + " ");
+			}
+			System.out.println();
+		}
+	}
+
+
+@Override
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
 		

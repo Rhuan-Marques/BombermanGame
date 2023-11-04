@@ -12,6 +12,7 @@ public class BombaAzul extends Bomba{
         this.setTamanhoExplosao(3);
         this.setTexture(bombaAzulTexture);
         this.setPiercing(true);
+        this.setDamage(2);
     }
     @Override
     public List<int[]> obterIndicesDaExplosao(int gridLength){

@@ -13,12 +13,14 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
     private int tamanhoDaExplosao;
 	private int vida;
 	private boolean piercing;
+	private int damage;
     public Bomba(int posX, int posY)
     {
     	this.tamanhoDaExplosao = 3;
 		this.vida = 1;
     	this.contador = -1;
-		piercing=false;
+		this.damage=1;
+		this.piercing=false;
         this.posX = posX;
         this.posY = posY;
         this.setTexture(bombaTexture);
@@ -116,6 +118,14 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
 
 	protected void setPiercing(boolean piercing){
 		this.piercing = piercing;
+	}
+
+	protected void setDamage(int damage){
+		this.damage = damage;
+	}
+
+	public int getDamage(){
+		return this.damage;
 	}
 
 	protected void setTamanhoExplosao(int tam){

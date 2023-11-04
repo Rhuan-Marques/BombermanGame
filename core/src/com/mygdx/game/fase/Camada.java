@@ -18,7 +18,6 @@ public class Camada {
             {new Texture("redFlower.png"), new Texture("yellowFlower.png"), new Texture("whiteFlower.png")}};
     private static Texture chaoTexture = new Texture("grass.png");
     private static Texture sandTexture = new Texture("chao.png");
-    private static Texture breakableTile = new Texture("tile.jpg");
     public Camada(int xSize) 
     {
     	this.tempoDaExplosao = Explosao.getTempoDaExplosao();
@@ -98,29 +97,20 @@ public class Camada {
     }
 
     /**
-     * Gera texturas de telhas quebráveis em posições específicas do grid.
+     * Gera o Layout de blocos baseado em um arquivo.txt
      */
-    public void generateBreakableTileTextures()
+    public void setBlockLayout(int layout[][])
     {
-        for(int i = 1; i < this.getGridSnap(); i += 2)
+        for(int i = 0; i < this.getGridSnap(); i+=1)
         {
-            for(int j = 1; j < this.getGridSnap(); j += 2)
+            for(int j = 0; j < this.getGridSnap(); j+=1)
             {
                 // Cria um objeto do jogo com textura de telha quebrável e define sua posição no grid.
-                Random random = new Random();
-                int vida;
-                int chance = random.nextInt(100)+1;
-                if(chance<=5)
-                    vida = 3;
-                else if(chance<=25)
-                    vida = 2;
-                else if(chance<=75)
-                    vida = 1;
-                else
-                    continue;
-                ObjetoDoJogo objeto = new Parede(i, j, vida);
-                // Define o objeto do jogo no grid na posição atual.
-                this.setObjetoDoJogo(objeto, i, j);
+                if(layout[i][j] > 0) {
+                    ObjetoDoJogo objeto = new Parede(i, j, layout[i][j]);
+                    // Define o objeto do jogo no grid na posição atual.
+                    this.setObjetoDoJogo(objeto, i, j);
+                }
             }
         }
     }
@@ -324,7 +314,7 @@ public class Camada {
                         if (layer1Objeto != null && layer1Objeto instanceof Explodivel)
                         {
                             // Aplica dano ao objeto atingido
-                            ObjetoDoJogo resultado = ((Explodivel) layer1Objeto).recebeExplosao(1);
+                            ObjetoDoJogo resultado = ((Explodivel) layer1Objeto).recebeExplosao(bombas[h].getDamage());
                             if(resultado != layer1Objeto){
                                 this.setObjetoDoJogo(resultado, x, y);
                             }
