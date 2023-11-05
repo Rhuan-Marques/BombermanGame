@@ -2,7 +2,7 @@ package com.mygdx.game.fase;
 import java.util.Random;
 import com.badlogic.gdx.graphics.Texture;
 
-public class Inimigo extends BombaAzul implements Explodivel
+public class Inimigo extends BombaAzul
 {
 	private Texture sprite[] = {new Texture("inimigo/inimigoBombaIdle.png"),
 			new Texture("inimigo/inimigoExplodindo.png"),
