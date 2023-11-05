@@ -2,7 +2,7 @@ package com.mygdx.game.fase;
 import java.util.Random;
 import com.badlogic.gdx.graphics.Texture;
 
-public class Inimigo extends BombaAzul
+public class Inimigo extends BombaAzul implements Explodivel
 {
 	private Texture sprite[] = {new Texture("inimigo/inimigoBombaIdle.png"),
 			new Texture("inimigo/inimigoExplodindo.png"),
@@ -16,7 +16,7 @@ public class Inimigo extends BombaAzul
 	 public Inimigo(int posX, int posY,int moveDirection)
     {
         super(posX, posY);
-        this.setTamanhoExplosao(3);
+        this.setTamanhoExplosao(5);
         this.setTexture(sprite[0]);
         this.setPiercing(true);
         this.setDamage(1);
@@ -156,5 +156,11 @@ public class Inimigo extends BombaAzul
 		 return this.countMove;
 	 }
 	//public void DefaultBehavior()
+
+	public ObjetoDoJogo acabaVida(){
+		this.contador=this.getTempoDeExplosao();
+		this.setExploded(true);
+		return this;
+	}
 
 }
