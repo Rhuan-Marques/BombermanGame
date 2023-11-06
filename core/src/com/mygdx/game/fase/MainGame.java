@@ -43,9 +43,9 @@ public class MainGame implements Screen
 		playerCount=0;
 		numeroDeInimigos = 3;
 		players = new Player[2];
-		players[0] = new Player(0,0, "player1", 2,
+		players[0] = new Player(0,0, "player1", 3,
 				Keys.UP, Keys.RIGHT, Keys.DOWN, Keys.LEFT, Keys.SHIFT_RIGHT);
-		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 2,
+		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 3,
 			Keys.W, Keys.D, Keys.S, Keys.A, Keys.F);
 		inimigosList = new ArrayList<>();
 		inimigosList = camadas[3].instanciarInimigosAleatoriamente(numeroDeInimigos);
@@ -99,7 +99,6 @@ public class MainGame implements Screen
                 Boolean[] posOcupadas = camadas[3].posAdjOcupadas(players[i]);
 
                 int pos = players[i].handleInput(Gdx.input, camadas[3].getGridSnap(), posOcupadas);
-
                 camadas[3].verificaBombasNaCamada(players[i],inimigosList, delta);
                 camadas[3].explosaoManager(delta);
 

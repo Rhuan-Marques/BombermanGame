@@ -11,13 +11,28 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
     protected float contador;
     private  Texture bombaTexture = new Texture("bomba.png");
     private int tamanhoDaExplosao;
-	private int vida;
+	private int vida; 
 	private boolean piercing;
 	private int damage;
 	private Boolean exploded;
-    public Bomba(int posX, int posY)
+	private int polvoraLvl;
+	private Player criador;
+    public Bomba(int posX, int posY, Player criador)
     {
-    	this.tamanhoDaExplosao = 3;
+		this.posX = posX;
+		this.posY = posY;
+		this.criador = criador;
+		if(this.criador != null){
+			this.polvoraLvl = this.criador.getPolvora();
+			this.piercing= this.criador.getPierceEffect();
+		}
+		else{
+			this.polvoraLvl = 0;
+			this.piercing = false;
+		}
+		this.tamanhoDaExplosao = 1;
+		if(polvoraLvl>=1)
+			this.tamanhoDaExplosao+=2;
 		this.vida = 1;
     	this.contador = -1;
 		this.damage=1;
@@ -144,9 +159,15 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
 	protected void setTamanhoExplosao(int tam){
 		tamanhoDaExplosao = tam;
 	}
+
+	protected int getPolvoraLvl(){
+		return this.polvoraLvl;
+	}
+
+	protected Player getCriador(){
+		return this.criador;
+	}
 	public String toString() {
         return "Bomba na posicao ("+this.getPosX()+", "+this.getPosY()+")";
     }
-
-	
 }

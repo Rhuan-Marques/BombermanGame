@@ -6,13 +6,16 @@ import java.util.List;
 
 public class BombaAzul extends Bomba{
     private static Texture bombaAzulTexture = new Texture("bombaAzul.png");
-    public BombaAzul(int posX, int posY)
+    public BombaAzul(int posX, int posY, Player criador)
     {
-        super(posX, posY);
+        super(posX, posY, criador);
         this.setTamanhoExplosao(3);
         this.setTexture(bombaAzulTexture);
         this.setPiercing(true);
-        this.setDamage(2);
+        if(this.getPolvoraLvl() >= 3){
+            this.setTamanhoExplosao(5);
+        }
+
     }
     @Override
     public List<int[]> obterIndicesDaExplosao(int gridLength){
