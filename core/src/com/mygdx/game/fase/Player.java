@@ -13,6 +13,8 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	private int item_Boot;
 	private int item_tipoBomba;
 	private int item_SacoBomba;
+	private int item_Polvora;
+    private boolean item_Oleo;
     protected Texture textures[] = new Texture[5];
 	private int keyUp;
 	private int keyDown;
@@ -33,6 +35,8 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		this.item_tipoBomba = 0;
 		this.item_Boot = 0;
 		this.item_SacoBomba = 1;
+        this.item_Oleo = false;
+		this.item_Polvora = 0;
 		this.keyUp=keyUp;
 		this.keyDown=keyDown;
 		this.keyRight=keyRight;
@@ -275,13 +279,16 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	    }
 		if(bombPlace){
 			if(item_tipoBomba==0){
-				bomba = new Bomba(bombPosX, bombPosY);
+				bomba = new Bomba(bombPosX, bombPosY, this);
 			}
 			else if(item_tipoBomba==1){
-				bomba = new BombaVermelha(bombPosX, bombPosY);
+				bomba = new BombaVermelha(bombPosX, bombPosY, this);
 			}
 			else if(item_tipoBomba==2){
-				bomba = new BombaAzul(bombPosX, bombPosY);
+				bomba = new BombaAzul(bombPosX, bombPosY, this);
+			}
+			else if(item_tipoBomba==3){
+				bomba = new BombaDourada(bombPosX, bombPosY, this);
 			}
 		}
 
@@ -313,6 +320,12 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		else if (tipo==12) {
 			item_SacoBomba+=1;
 		}
+		else if(tipo==13){
+			item_Oleo = true;
+		}
+		else if(tipo==14){
+			item_Polvora+=1;
+		}
 	}
 	public int getVida()
 	{
@@ -330,5 +343,11 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	public int getKickPower(){
 		return item_Boot;
 	}
+    public boolean getPierceEffect(){
+        return this.item_Oleo;
+    }
 
+	public int getPolvora(){
+		return this.item_Polvora;
+	}
 }

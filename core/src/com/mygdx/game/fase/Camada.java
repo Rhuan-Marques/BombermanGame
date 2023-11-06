@@ -281,7 +281,7 @@ public class Camada {
      * @param players       Array de jogadores no jogo.
      * @param delta         O tempo decorrido desde o último frame.
      */
-    public void verificaBombasNaCamada(Player currentPlayer, Player players[], float delta) 
+    public void verificaBombasNaCamada(Player currentPlayer, float delta)
     {
         // Obtém a lista de bombas do jogador atual
         Bomba bombas[] = currentPlayer.bombas;

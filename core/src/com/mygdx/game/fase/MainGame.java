@@ -23,7 +23,6 @@ public class MainGame implements Screen
     private BitmapFont font;
     private OrthographicCamera font_cam;
     private Player[] players;
-	private int player_count;
     private Camada[] camadas;
     private Bomberman game;
     private boolean gameOver;
@@ -38,11 +37,10 @@ public class MainGame implements Screen
         this.game = game;
         font = new BitmapFont(Gdx.files.internal("fontLucidaSans.fnt"));
         this.generateCamadaTextures();
-		player_count=0;
 		players = new Player[2];
-		players[0] = new Player(0,0, "player1", 2,
+		players[0] = new Player(0,0, "player1", 3,
 				Keys.UP, Keys.RIGHT, Keys.DOWN, Keys.LEFT, Keys.SHIFT_RIGHT);
-		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 2,
+		players[1] = new Player(camadas[3].getGridSnap() - 2, camadas[3].getGridSnap()-1, "player2", 3,
 			Keys.W, Keys.D, Keys.S, Keys.A, Keys.F);
     }
 
@@ -72,7 +70,7 @@ public class MainGame implements Screen
 
                 int pos = players[i].handleInput(Gdx.input, camadas[3].getGridSnap(), posOcupadas);
 
-                camadas[3].verificaBombasNaCamada(players[i], players, delta);
+                camadas[3].verificaBombasNaCamada(players[i], delta);
                 camadas[3].explosaoManager(delta);
 
                 // Remove o jogador da posição anterior e o coloca na posição atual

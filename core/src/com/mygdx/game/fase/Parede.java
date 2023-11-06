@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 
 import java.util.Random;
 
-
 public class Parede extends ObjetoDoJogo implements Explodivel{
     private Integer vida;
     public Parede(int posX, int posY, int vida){
@@ -30,17 +29,26 @@ public class Parede extends ObjetoDoJogo implements Explodivel{
         Random random = new Random();
         int chance = random.nextInt(100)+1;
         ObjetoDoJogo drop;
-        if(chance<=15){
+        if(chance<=10){
             drop = new Item(this.posX, this.posY, 1);
         }
-        else if(chance<=30){
+        else if(chance<=20){
             drop = new Item(this.posX, this.posY, 2);
         }
-        else if(chance<=50){
+        else if(chance<=25){
+            drop = new Item(this.posX, this.posY, 3);
+        }
+        else if(chance<=35){
             drop = new Item(this.posX, this.posY, 11);
         }
-        else if(chance<=55){
+        else if(chance<=40){
             drop = new Item(this.posX, this.posY, 12);
+        }
+        else if(chance<=42){
+            drop = new Item(this.posX, this.posY, 13);
+        }
+        else if(chance<=60){
+            drop = new Item(this.posX, this.posY, 14);
         }
         else{
             drop = null;
