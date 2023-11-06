@@ -1,4 +1,4 @@
-sourceCompatibility = 1.8
+sourceCompatibility = 17
 sourceSets.main.java.srcDirs = [ "src/" ]
 sourceSets.main.resources.srcDirs = ["../assets"]
 
@@ -34,7 +34,7 @@ tasks.register('debug', JavaExec) {
 tasks.register('dist', Jar) {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
     manifest {
-        attributes 'Main-Class': project.mainClassName
+        attributes 'Main-Class': 'com.mygdx.game.DesktopLauncher' // Substitua com o caminho correto para sua classe principal
     }
     dependsOn configurations.runtimeClasspath
     from {
@@ -42,6 +42,7 @@ tasks.register('dist', Jar) {
     }
     with jar
 }
+
 
 
 dist.dependsOn classes
