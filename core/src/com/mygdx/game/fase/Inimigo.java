@@ -15,7 +15,7 @@ public class Inimigo extends BombaAzul
 	private Boolean expl;
 	 public Inimigo(int posX, int posY,int moveDirection)
     {
-        super(posX, posY);
+        super(posX, posY,null);
         this.setTamanhoExplosao(5);
         this.setTexture(sprite[0]);
         this.setPiercing(true);
