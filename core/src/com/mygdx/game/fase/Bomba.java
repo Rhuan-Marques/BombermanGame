@@ -24,7 +24,7 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
 		this.criador = criador;
 		if(this.criador != null){
 			this.polvoraLvl = this.criador.getPolvora();
-			this.piercing= this.criador.getPierceEffect();
+			this.piercing = this.criador.getPierceEffect();
 		}
 		else{
 			this.polvoraLvl = 0;
@@ -36,7 +36,6 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
 		this.vida = 1;
     	this.contador = -1;
 		this.damage=1;
-		this.piercing=false;
         this.posX = posX;
         this.posY = posY;
         this.exploded = false;

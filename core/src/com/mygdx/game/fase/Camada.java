@@ -135,7 +135,7 @@ public class Camada {
     /**
      * Verifica se as posições adjacentes ao jogador estão ocupadas por objetos no mapa.
      * 
-     * @param player Jogador cujas posições adjacentes estão sendo verificadas.
+     * @param obj Objeto cujas posições adjacentes estão sendo verificadas.
      * @return Um array de Boolean indicando se as posições adjacentes estão ocupadas (true) ou não (false).
      */
     public Boolean[] posAdjOcupadas(ObjetoDoJogo obj) 
@@ -285,6 +285,22 @@ public class Camada {
             if (objetoDoJogo instanceof Item){
                 current_player.recebeItem(((Item)objetoDoJogo).getTipo());
                 this.setObjetoDoJogo(null, posAdj[pos][0], posAdj[pos][1]);
+            }
+
+            else if(objetoDoJogo instanceof Parede &&
+                    current_player.getJumping()) {
+
+                int[][] adjPosObjeto = objetoDoJogo.getAdjacentPositions(this.getGridSnap());
+                int[] newPos = adjPosObjeto[pos];
+                if(newPos != null && this.objetosCamadas[newPos[0]][newPos[1]] == null){
+                    int[] oldPos = current_player.getCurrentPos();
+                    current_player.setPosX(newPos[0]);
+                    current_player.setPosY(newPos[1]);
+                    current_player.setDirection(pos);
+
+                    this.setObjetoDoJogo(current_player, newPos[0], newPos[1]);
+                    this.setObjetoDoJogo(null, oldPos[0], oldPos[1]);
+                }
             }
 
         }

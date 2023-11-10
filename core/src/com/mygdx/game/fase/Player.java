@@ -10,11 +10,13 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	protected int direction;
 	public Bomba bombas[];
 	private Integer vida;
+	private Integer maxVida;
 	private int item_Boot;
 	private int item_tipoBomba;
 	private int item_SacoBomba;
 	private int item_Polvora;
     private boolean item_Oleo;
+	private boolean item_Asa;
     protected Texture textures[] = new Texture[5];
 	private int keyUp;
 	private int keyDown;
@@ -26,7 +28,7 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 				  int keyUp, int keyRight, int keyDown, int keyLeft, int keyBomb)
     {
         super();
-        this.vida = vida;
+        this.vida = this.maxVida = vida;
 		this.direction=0;
         this.carregarTextura(playerTextureFolder);
 		this.texture = textures[direction];
@@ -37,6 +39,7 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		this.item_SacoBomba = 1;
         this.item_Oleo = false;
 		this.item_Polvora = 0;
+		this.item_Asa = false;
 		this.keyUp=keyUp;
 		this.keyDown=keyDown;
 		this.keyRight=keyRight;
@@ -139,10 +142,9 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	            pos = 0;
 	        }
 	    }
-		this.texture = this.textures[direction];
+		this.updateTexture(this.textures);
 	    return pos;
 	}
-
 	/**
 	 * Atualiza o temporizador das bombas do jogador e retorna uma lista de índices
 	 * onde ocorrerá a explosão após o término do tempo da bomba.
@@ -247,21 +249,8 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	            break;
 	    }
 		if(bombPlace){
-			if(item_tipoBomba==0){
-				bomba = new Bomba(bombPosX, bombPosY, this);
-			}
-			else if(item_tipoBomba==1){
-				bomba = new BombaVermelha(bombPosX, bombPosY, this);
-			}
-			else if(item_tipoBomba==2){
-				bomba = new BombaAzul(bombPosX, bombPosY, this);
-			}
-			else if(item_tipoBomba==3){
-				bomba = new BombaDourada(bombPosX, bombPosY, this);
-			}
+			bomba = getBombaType(bombPosX, bombPosY);
 		}
-
-
 	    // Adiciona a nova bomba ao array de bombas do jogador
 	    if (bomba != null) 
 	    {
@@ -280,6 +269,25 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	    }
 	}
 
+	public Bomba getBombaType(int bombPosX, int bombPosY){
+		Bomba bomba;
+		if(item_tipoBomba==0){
+			bomba = new Bomba(bombPosX, bombPosY, this);
+		}
+		else if(item_tipoBomba==1){
+			bomba = new BombaVermelha(bombPosX, bombPosY, this);
+		}
+		else if(item_tipoBomba==2){
+			bomba = new BombaAzul(bombPosX, bombPosY, this);
+		}
+		else if(item_tipoBomba==3){
+			bomba = new BombaDourada(bombPosX, bombPosY, this);
+		}
+		else
+			bomba = null;
+		return bomba;
+	}
+
 	public void recebeItem(int tipo){
 		if(tipo<10){
 			item_tipoBomba = tipo;
@@ -295,6 +303,9 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		else if(tipo==14){
 			item_Polvora+=1;
 		}
+		else if(tipo==15){
+			item_Asa = true;
+		}
 	}
 	public int getVida()
 	{
@@ -309,14 +320,30 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		this.direction = dir;
 	}
 
-	public int getKickPower(){
+	public Integer getKickPower(){
 		return item_Boot;
 	}
     public boolean getPierceEffect(){
         return this.item_Oleo;
     }
 
-	public int getPolvora(){
+	public Integer getPolvora(){
 		return this.item_Polvora;
+	}
+
+	public Integer getMaxBombas(){
+		return this.item_SacoBomba;
+	}
+
+	public Integer getMaxVida(){
+		return this.maxVida;
+	}
+
+	public boolean getJumping(){
+		return this.item_Asa;
+	}
+
+	public void updateTexture(Texture[] textures){
+		this.texture; = textures[direction];
 	}
 }

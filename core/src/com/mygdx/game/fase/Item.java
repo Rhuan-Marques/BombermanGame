@@ -33,6 +33,9 @@ public class Item extends ObjetoDoJogo{
         else if(tipo==14){
             path+="Polvora";
         }
+        else if (tipo==15) {
+            path+="Asa";
+        }
         else{
             path+="FileTemporarioPraTeste";
         }

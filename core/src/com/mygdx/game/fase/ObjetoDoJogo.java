@@ -2,8 +2,7 @@ package com.mygdx.game.fase;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class ObjetoDoJogo 
-{
+public class ObjetoDoJogo {
 	protected Texture texture;
 	protected int posX = 0;
 	protected int posY = 0;
