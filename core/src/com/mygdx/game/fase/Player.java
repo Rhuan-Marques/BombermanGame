@@ -17,12 +17,15 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	private int item_Polvora;
     private boolean item_Oleo;
 	private boolean item_Asa;
-    protected Texture textures[] = new Texture[5];
+    private Texture[] textures = new Texture[5];
+	private Texture[] transformTexture = new Texture[5];
 	private int keyUp;
 	private int keyDown;
 	private int keyLeft;
 	private int keyRight;
 	private int keyBomb;
+	private float contador;
+	private float max_cont;
 
     public Player(int posX, int posY, String playerTextureFolder,int vida,
 				  int keyUp, int keyRight, int keyDown, int keyLeft, int keyBomb)
@@ -30,7 +33,10 @@ public class Player extends ObjetoDoJogo implements  Explodivel
         super();
         this.vida = this.maxVida = vida;
 		this.direction=0;
-        this.carregarTextura(playerTextureFolder);
+		this.contador=0;
+		this.max_cont=0;
+        this.textures = this.carregarTexturaPlayer(playerTextureFolder);
+		this.transformTexture = null;
 		this.texture = textures[direction];
         this.posX = posX;
         this.posY = posY;
@@ -47,12 +53,14 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		this.keyBomb=keyBomb;
     }
 
-	public void carregarTextura(String pasta){
+	public Texture[] carregarTexturaPlayer(String pasta){
+		Texture[] textures = new Texture[5];
 		textures[0] = new Texture(pasta + "\\LEFT.png");
 		textures[1] = new Texture(pasta + "\\RIGHT.png");
 		textures[2] = new Texture(pasta + "\\DOWN.png");
 		textures[3] = new Texture(pasta + "\\UP.png");
 		textures[4] = new Texture(pasta + "\\DEAD.png");
+		return textures;
 	}
 	@Override
 	public ObjetoDoJogo recebeExplosao(int dano)
@@ -83,10 +91,15 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	 * @param posOcupadas   Array de Boolean indicando se as posições adjacentes estão ocupadas.
 	 * @return Retorna a direcao na qual o jogador foi ou -1 se o movimento foi nao foi bem-sucedido.
 	 */
-	public int handleInput(Input input, int gridLength, Boolean posOcupadas[]) 
+	public int handleInput(Input input, int gridLength, Boolean posOcupadas[], float delta)
 	{
 	    int pos = -1;
-
+		if(this.max_cont > 0){
+			this.contador+=delta;
+			if(this.contador >= this.max_cont){
+				this.deTransform();
+			}
+		}
 	    // Verifica se a tecla de bomba foi pressionada e a posição da bomba não está ocupada
 	    if (input.isKeyJustPressed(keyBomb) && !posOcupadas[this.direction])
 	    {
@@ -142,7 +155,9 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	            pos = 0;
 	        }
 	    }
-		this.updateTexture(this.textures);
+		else
+			return pos;
+		this.updateTexture();
 	    return pos;
 	}
 	/**
@@ -155,6 +170,7 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	 */
 	public List<int[]> updateBombaTime(float delta, int gridLength, Bomba bomba)
 	{
+
 		// Verifica se a bomba não é nula
 		if (bomba != null)
 		{
@@ -343,7 +359,23 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		return this.item_Asa;
 	}
 
-	public void updateTexture(Texture[] textures){
-		this.texture; = textures[direction];
+	public void updateTexture(){
+		if(this.transformTexture != null)
+			this.texture = this.transformTexture[this.direction];
+		else
+			this.texture = this.textures[direction];
+	}
+
+	public void transform(String nomePasta, float maxTime){
+		this.transformTexture = this.carregarTexturaPlayer(nomePasta);
+		this.contador = 0;
+		this.max_cont = maxTime;
+		this.updateTexture();
+	}
+	private void deTransform(){
+		this.contador=0;
+		this.max_cont=0;
+		this.transformTexture=null;
+		this.updateTexture();
 	}
 }

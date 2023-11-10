@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import com.badlogic.gdx.Gdx;
@@ -98,7 +99,7 @@ public class MainGame implements Screen {
 				Boolean[] posOcupadas = camadas[3].posAdjOcupadas(players[i]);
 
 				// Checa input do player e guarda a direcao que virou em pos
-				int pos = players[i].handleInput(Gdx.input, camadas[3].getGridSnap(), posOcupadas);
+				int pos = players[i].handleInput(Gdx.input, camadas[3].getGridSnap(), posOcupadas, delta);
 
 				// Manuzeia explosoes de bombas
 				camadas[3].verificaBombasNaCamada(players[i], inimigosList, delta);
@@ -160,7 +161,6 @@ public class MainGame implements Screen {
 
 		// Define a projeção da câmera para a fonte utilizada para renderizar informações de vida
 		game.batch.setProjectionMatrix(font_cam.combined);
-
 		// Itera sobre os jogadores para renderizar as informações de vida
 		for (int i = 0; i < players.length; i++) {
 			String text = "Player " + (i + 1) + "  ";

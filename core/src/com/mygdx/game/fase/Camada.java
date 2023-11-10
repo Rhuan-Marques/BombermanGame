@@ -297,7 +297,7 @@ public class Camada {
                     current_player.setPosX(newPos[0]);
                     current_player.setPosY(newPos[1]);
                     current_player.setDirection(pos);
-
+                    current_player.transform("Passaro", (float)0.3);
                     this.setObjetoDoJogo(current_player, newPos[0], newPos[1]);
                     this.setObjetoDoJogo(null, oldPos[0], oldPos[1]);
                 }
