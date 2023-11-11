@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Player extends ObjetoDoJogo implements  Explodivel
 {
+	private String name;
 	protected int direction;
 	public Bomba bombas[];
 	private Integer vida;
@@ -37,6 +38,7 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		this.contador=0;
 		this.max_cont=0;
         this.textures = this.carregarTexturaPlayer(playerTextureFolder);
+		this.name = playerTextureFolder;
 		this.transformTexture = null;
 		this.texture = textures[direction];
         this.posX = posX;
@@ -389,5 +391,9 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		this.max_cont=0;
 		this.transformTexture=null;
 		this.updateTexture();
+	}
+
+	public String getName(){
+		return name;
 	}
 }

@@ -4,29 +4,43 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.mygdx.game.Bomberman;
+import jdk.internal.net.http.common.Pair;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class TutorialMenu implements Screen {
     Bomberman game;
-    private final Texture playButtonActive;
-    private final Texture playButtonInactive;
+    private BotaoClicavel play;
     private static final int INITIAL_X = 15;
-    private static final int PLAY_BUTTON_WIDTH = 330;
-    private static final int PLAY_BUTTON_HEIGHT = 150;
     private int SIZE_ICON;
-    private static final String ITEM_PATH = ".\\assets\\Items";
     private static final String DESC_PATH = ".\\assets\\Tutorial_Descriptions";
+
+    private static HashMap<String, Texture> sprites;
+    private static HashMap<String, String> descriptions;
+    ArrayList <String> items;
     public TutorialMenu(Bomberman game)
     {
         this.game = game;
-        playButtonActive = new Texture("play_button_active.png");
-        playButtonInactive = new Texture("play_button_inactive.png");
+        play = new BotaoClicavel(-1, 5, 330, 150,
+                new Texture("play_button_active.png"),
+                new Texture("play_button_inactive.png"));
+        play.setPosX(game.WIDTH/2 - play.getWidth()/2);
         game.font.getData().setScale((float)1.8);
+        game.font.setColor(0.8f, 0.8f, 0.4f, 1);
+
+        this.items = listItemsFromAssetsFolder(DESC_PATH);
+        this.SIZE_ICON = (game.HEIGHT-150)/ items.size();
+
+        sprites = new HashMap<>();
+        descriptions = new HashMap<>();
+        for(String item: items){
+            sprites.put(item, getSprite(item));
+            descriptions.put(item, getDescription(item));
+        }
     }
 
     @Override
@@ -38,8 +52,7 @@ public class TutorialMenu implements Screen {
 
         game.batch.begin();
 
-        ArrayList <String> items = listItemsFromAssetsFolder(DESC_PATH);
-        SIZE_ICON = (game.HEIGHT-150)/ items.size();
+
         int yCoord=150;
 
         for(String item : items){
@@ -47,34 +60,20 @@ public class TutorialMenu implements Screen {
             yCoord+=SIZE_ICON;
         }
 
-        int x = Bomberman.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2;
         // Verifica se o mouse está sobre o botão de jogar
-        if (isMouseOverButton(x, 0, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT))
-        {
-            game.batch.draw(playButtonActive, x, 0, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
-            // Inicia o jogo principal se o botão é clicado
-            if (Gdx.input.isTouched())
-            {
+        if(play.buttonFunction(game)){
                 this.dispose();
                 game.setScreen(new MainGame(game));
-            }
         }
-        else
-        {
-            game.batch.draw(playButtonInactive, x, 0, PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
-        }
-
 
         game.batch.end();
     }
 
     void addItemDescription(String itemName, int yCoord){
-        Texture texture = getSprite(itemName);
-        game.batch.draw(texture, INITIAL_X, yCoord, SIZE_ICON, SIZE_ICON);
+        game.batch.draw(sprites.get(itemName), INITIAL_X, yCoord, SIZE_ICON, SIZE_ICON);
         int x = INITIAL_X + SIZE_ICON + 10;
         int y =  yCoord + (int)(SIZE_ICON * 0.8);
-        game.font.draw(game.batch, getDescription(itemName),x ,y, game.WIDTH - x, -1, true);
-        //game.font.draw
+        game.font.draw(game.batch, descriptions.get(itemName),x ,y, game.WIDTH - x, -1, true);
     }
 
     public static Texture getSprite(String itemName) {
@@ -124,15 +123,6 @@ public class TutorialMenu implements Screen {
 
         return itemList;
     }
-
-    private boolean isMouseOverButton(int buttonX, int buttonY, int buttonWidth, int buttonHeight)
-    {
-        return Gdx.input.getX() < buttonX + buttonWidth &&
-                Gdx.input.getX() > buttonX &&
-                Bomberman.HEIGHT - Gdx.input.getY() < buttonY + buttonHeight &&
-                Bomberman.HEIGHT - Gdx.input.getY() > buttonY;
-    }
-
 
     @Override
     public void resize(int width, int height) {

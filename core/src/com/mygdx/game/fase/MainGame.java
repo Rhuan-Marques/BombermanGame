@@ -72,8 +72,12 @@ public class MainGame implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// Verifica se o jogo acabou
-		gameOver = (!players[0].taVivo() || !players[1].taVivo());
-		gameOver = (!players[0].taVivo() || !players[1].taVivo());
+		if(!players[0].taVivo() && !players[1].taVivo())
+			game.setScreen(new WinScreen(game, null));
+		else if(!players[0].taVivo())
+			game.setScreen(new WinScreen(game, players[1].getName()));
+		else if(!players[1].taVivo())
+			game.setScreen(new WinScreen(game, players[0].getName()));
 		if (inimigosList != null) {
 			for (int i = 0; i < inimigosList.size(); i++) {
 				Inimigo inimigo = inimigosList.get(i);

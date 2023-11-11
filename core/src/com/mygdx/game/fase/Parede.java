@@ -50,7 +50,7 @@ public class Parede extends ObjetoDoJogo implements Explodivel{
         else if(chance<=60){
             drop = new Item(this.posX, this.posY, 14);
         }
-        else if(chance<=100){
+        else if(chance<=63){
             drop = new Item(this.posX, this.posY, 15);
         }
         else if(chance<=68){
