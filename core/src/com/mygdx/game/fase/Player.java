@@ -17,6 +17,7 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	private int item_Polvora;
     private boolean item_Oleo;
 	private boolean item_Asa;
+	private boolean item_Armadura;
     private Texture[] textures = new Texture[5];
 	private Texture[] transformTexture = new Texture[5];
 	private int keyUp;
@@ -46,6 +47,7 @@ public class Player extends ObjetoDoJogo implements  Explodivel
         this.item_Oleo = false;
 		this.item_Polvora = 0;
 		this.item_Asa = false;
+		this.item_Armadura = false;
 		this.keyUp=keyUp;
 		this.keyDown=keyDown;
 		this.keyRight=keyRight;
@@ -65,6 +67,10 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 	@Override
 	public ObjetoDoJogo recebeExplosao(int dano)
 	{
+		if(this.item_Armadura){
+			this.item_Armadura = false;
+			return this;
+		}
 		this.vida -= dano;
 		if(this.vida > 0)
 			return this;
@@ -322,6 +328,9 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		else if(tipo==15){
 			item_Asa = true;
 		}
+		else if(tipo==16){
+			item_Armadura=true;
+		}
 	}
 	public int getVida()
 	{
@@ -359,6 +368,9 @@ public class Player extends ObjetoDoJogo implements  Explodivel
 		return this.item_Asa;
 	}
 
+	public boolean getDmgResist(){
+		return this.item_Armadura;
+	}
 	public void updateTexture(){
 		if(this.transformTexture != null)
 			this.texture = this.transformTexture[this.direction];

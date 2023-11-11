@@ -34,7 +34,7 @@ public class MainGame implements Screen {
 	private Texture itemSlot;
 	private Texture[] itemUiTextures;
 
-	private static final int ITEM_UI_MAX = 6;
+	private static final int ITEM_UI_MAX = 7;
 
 	public MainGame(Bomberman game) {
 		// Inicialização
@@ -226,6 +226,9 @@ public class MainGame implements Screen {
 				posX += sizeBomb;
 			}
 
+			if(addItemToUi(itemUiTextures[5], sizeBomb, posX + offset, posY, players[i].getDmgResist())){
+				posX += sizeBomb;
+			}
 
 		}
 	}

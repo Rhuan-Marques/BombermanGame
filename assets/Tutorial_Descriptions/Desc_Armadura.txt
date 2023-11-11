@@ -1,0 +1,2 @@
+Armadura: Te permite defender de uma unica explosAo!
+O dano da explosAo nAo faz diferença

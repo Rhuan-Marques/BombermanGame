@@ -36,6 +36,9 @@ public class Item extends ObjetoDoJogo{
         else if (tipo==15) {
             path+="Asa";
         }
+        else if(tipo==16){
+            path+="Armadura";
+        }
         else{
             path+="FileTemporarioPraTeste";
         }

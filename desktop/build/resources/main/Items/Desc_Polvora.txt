@@ -1,2 +1,0 @@
-Polvora: Item comum, ao pegar 1 desses, sua bomba padrao melhora.
-Ao pegar ainda mais destes, suas bombas especiais melhoram

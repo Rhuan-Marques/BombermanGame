@@ -19,7 +19,8 @@ public class TutorialMenu implements Screen {
     private static final int PLAY_BUTTON_WIDTH = 330;
     private static final int PLAY_BUTTON_HEIGHT = 150;
     private int SIZE_ICON;
-    private static final String ITEM_PATH = "C:\\Users\\Rhuan\\OneDrive\\Documentos\\My_Stuff\\Coding\\POO\\BombermanGame\\assets\\Items";
+    private static final String ITEM_PATH = ".\\assets\\Items";
+    private static final String DESC_PATH = ".\\assets\\Tutorial_Descriptions";
     public TutorialMenu(Bomberman game)
     {
         this.game = game;
@@ -37,7 +38,7 @@ public class TutorialMenu implements Screen {
 
         game.batch.begin();
 
-        ArrayList <String> items = listItemsFromAssetsFolder(ITEM_PATH);
+        ArrayList <String> items = listItemsFromAssetsFolder(DESC_PATH);
         SIZE_ICON = (game.HEIGHT-150)/ items.size();
         int yCoord=150;
 
@@ -68,8 +69,7 @@ public class TutorialMenu implements Screen {
     }
 
     void addItemDescription(String itemName, int yCoord){
-        String path = "Items\\Item_" + itemName + ".png";
-        Texture texture = new Texture(path);
+        Texture texture = getSprite(itemName);
         game.batch.draw(texture, INITIAL_X, yCoord, SIZE_ICON, SIZE_ICON);
         int x = INITIAL_X + SIZE_ICON + 10;
         int y =  yCoord + (int)(SIZE_ICON * 0.8);
@@ -77,8 +77,20 @@ public class TutorialMenu implements Screen {
         //game.font.draw
     }
 
+    public static Texture getSprite(String itemName) {
+        Texture texture;
+        String path = "Items\\Item_" + itemName + ".png";
+        try{
+            texture = new Texture(path);
+        }catch (Exception e){
+            texture = new Texture("TestingImage.png");
+        }
+        return texture;
+    }
+
+
     public static String getDescription(String itemName) {
-        String fileName = ITEM_PATH + "\\Desc_" + itemName + ".txt";
+        String fileName = DESC_PATH + "\\Desc_" + itemName + ".txt";
         StringBuilder content = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -97,18 +109,13 @@ public class TutorialMenu implements Screen {
         ArrayList<String> itemList = new ArrayList<>();
         File folder = new File(folderPath);
         if (folder.exists() && folder.isDirectory()) {
-            File[] files = folder.listFiles(new FileFilter(){
-                @Override
-                public boolean accept(File file) {
-                    return file.isFile();
-                }
-            });
+            File[] files = folder.listFiles();
 
             if (files != null) {
                 for (File file : files) {
-                    if(file.getName().contains("Item_")){
+                    if(file.getName().contains("Desc")){
                         String itemName = file.getName();
-                        itemName = itemName.replace("Item_", "").replace(".png", "").replace(".PNG", "");
+                        itemName = itemName.replace("Desc_", "").replace(".txt", "").replace(".PNG", "");
                         itemList.add(itemName);
                     }
                 }

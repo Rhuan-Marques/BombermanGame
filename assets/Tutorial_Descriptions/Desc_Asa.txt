@@ -1,0 +1,2 @@
+Asa: Faz com que o jogador consiga voar por cima de paredes
+Somente funciona caso o espaCo atras da parede esteja livre

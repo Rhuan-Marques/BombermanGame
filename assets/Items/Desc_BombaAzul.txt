@@ -1,3 +1,0 @@
-Bomba Azul: Pegue uma dessas pra alterar sua bomba!
-Explode em um quadrado 3x3 (Paredes nao afetam a explosao)
-3 Polvora: Alcance + 2
