@@ -1,1 +1,0 @@
-Saco de Bombas: Aumenta o numero maximo de bombas que pode ter no campo

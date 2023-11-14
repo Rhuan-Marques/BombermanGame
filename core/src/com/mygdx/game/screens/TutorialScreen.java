@@ -1,84 +1,76 @@
-package com.mygdx.game.fase;
+package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.Bomberman;
-import jdk.internal.net.http.common.Pair;
+import com.mygdx.game.fase.Player;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class TutorialMenu implements Screen {
+public abstract class TutorialScreen implements Screen {
     Bomberman game;
-    private BotaoClicavel play;
-    private static final int INITIAL_X = 15;
-    private int SIZE_ICON;
-    private static final String DESC_PATH = ".\\assets\\Tutorial_Descriptions";
+    protected static BotaoClicavel play;
+    protected static final int INITIAL_X = 50;
+    protected static int INITIAL_Y;
+    protected static int SIZE_ICON;
+    protected static int GAP;
+    protected static final String DESC_PATH = ".\\assets\\Tutorial";
+    protected String DESC_TYPE;
+    protected static HashMap<String, Texture> sprites;
+    protected static HashMap<String, String> descriptions;
 
-    private static HashMap<String, Texture> sprites;
-    private static HashMap<String, String> descriptions;
-    ArrayList <String> items;
-    public TutorialMenu(Bomberman game)
+    protected ArrayList <String> items;
+    public TutorialScreen(Bomberman game)
     {
         this.game = game;
-        play = new BotaoClicavel(-1, 5, 330, 150,
-                new Texture("play_button_active.png"),
-                new Texture("play_button_inactive.png"));
-        play.setPosX(game.WIDTH/2 - play.getWidth()/2);
-        game.font.getData().setScale((float)1.8);
-        game.font.setColor(0.8f, 0.8f, 0.4f, 1);
+        this.DESC_TYPE = "";
+        INITIAL_Y = game.HEIGHT-40;
+        GAP = 20;
 
-        this.items = listItemsFromAssetsFolder(DESC_PATH);
-        this.SIZE_ICON = (game.HEIGHT-150)/ items.size();
+        play = new BotaoClicavel(-1, 5, 330, 150,
+                new Texture("Botoes\\play_button_active.png"),
+                new Texture("Botoes\\play_button_inactive.png"));
+        play.centerPosX(game);
+
+        game.font.setColor(0.8f, 0.8f, 0.4f, 1);
+        game.font.getData().setScale(1.5f);
 
         sprites = new HashMap<>();
         descriptions = new HashMap<>();
-        for(String item: items){
-            sprites.put(item, getSprite(item));
-            descriptions.put(item, getDescription(item));
-        }
+        this.items = new ArrayList<>();
     }
 
     @Override
-    public void render(float delta)
-    {
-        // Configuração do fundo
-        Gdx.gl.glClearColor(0.05f, 0.05f, 0.2f, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        game.batch.begin();
-
-
-        int yCoord=150;
-
+    public abstract void render(float delta);
+    protected void loadAssets(){
+        this.items = listItemsFromAssetsFolder(DESC_PATH);
         for(String item : items){
-            addItemDescription(item, yCoord);
-            yCoord+=SIZE_ICON;
+            sprites.put(item, getSprite(item));
+            descriptions.put(item, getDescription(item));
         }
 
-        // Verifica se o mouse está sobre o botão de jogar
-        if(play.buttonFunction(game)){
-                this.dispose();
-                game.setScreen(new MainGame(game));
-        }
-
-        game.batch.end();
+        this.SIZE_ICON = (game.HEIGHT - play.getHeight()-10 - (game.HEIGHT-INITIAL_Y) - GAP * (items.size()-1))/ items.size();
+        if(this.items.size() <= 3)
+            this.SIZE_ICON -= 50;
     }
 
-    void addItemDescription(String itemName, int yCoord){
+
+    protected void addItemDescription(String itemName, int yCoord){
         game.batch.draw(sprites.get(itemName), INITIAL_X, yCoord, SIZE_ICON, SIZE_ICON);
         int x = INITIAL_X + SIZE_ICON + 10;
         int y =  yCoord + (int)(SIZE_ICON * 0.8);
         game.font.draw(game.batch, descriptions.get(itemName),x ,y, game.WIDTH - x, -1, true);
     }
 
-    public static Texture getSprite(String itemName) {
+    protected abstract Texture getSprite(String itemName);
+
+    protected Texture spriteFromPath(String path){
         Texture texture;
-        String path = "Items\\Item_" + itemName + ".png";
         try{
             texture = new Texture(path);
         }catch (Exception e){
@@ -87,9 +79,8 @@ public class TutorialMenu implements Screen {
         return texture;
     }
 
-
-    public static String getDescription(String itemName) {
-        String fileName = DESC_PATH + "\\Desc_" + itemName + ".txt";
+    protected String getDescription(String itemName) {
+        String fileName = DESC_PATH + "\\" + DESC_TYPE + "_" + itemName + ".txt";
         StringBuilder content = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
@@ -104,7 +95,7 @@ public class TutorialMenu implements Screen {
         return content.toString();
     }
 
-    public static ArrayList<String> listItemsFromAssetsFolder(String folderPath) {
+    protected ArrayList<String> listItemsFromAssetsFolder(String folderPath) {
         ArrayList<String> itemList = new ArrayList<>();
         File folder = new File(folderPath);
         if (folder.exists() && folder.isDirectory()) {
@@ -112,9 +103,9 @@ public class TutorialMenu implements Screen {
 
             if (files != null) {
                 for (File file : files) {
-                    if(file.getName().contains("Desc")){
+                    if(file.getName().startsWith(DESC_TYPE)){
                         String itemName = file.getName();
-                        itemName = itemName.replace("Desc_", "").replace(".txt", "").replace(".PNG", "");
+                        itemName = itemName.replaceFirst(DESC_TYPE, "").replaceFirst("_", "").replace(".txt", "").replace(".TXT", "");
                         itemList.add(itemName);
                     }
                 }
@@ -122,6 +113,10 @@ public class TutorialMenu implements Screen {
         }
 
         return itemList;
+    }
+
+    protected String removeOrder(String itemName){
+        return itemName.replaceAll("[0-9]", "").replace(".", "");
     }
 
     @Override

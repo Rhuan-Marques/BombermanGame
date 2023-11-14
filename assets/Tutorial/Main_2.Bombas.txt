@@ -1,0 +1,5 @@
+--- Bombas ---
+Coloque combas para destruir paredes, inimigos e seus oponentes
+Cada bomba tem diferentes formatos de explosao
+E podem ser melhoradas com items
+-- Clique aqui para saber mais

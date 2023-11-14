@@ -1,0 +1,5 @@
+--- Bomba Vermelha ---
+Explosao: Comum
+Alcance: 3
+Dano: 1
+Polvora: Alcance+2, Explosao com Diagonal

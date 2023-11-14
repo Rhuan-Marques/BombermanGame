@@ -1,10 +1,11 @@
-package com.mygdx.game.fase;
+package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.Bomberman;
 import com.badlogic.gdx.Screen;
+import com.mygdx.game.screens.BotaoClicavel;
 
 public class WinScreen implements Screen {
     Bomberman game;
@@ -20,8 +21,8 @@ public class WinScreen implements Screen {
             game.font.setColor(0, 1, 0, 1);
 
         returnToMenu = new BotaoClicavel(-1, 20, 500, 250,
-                new Texture("exit_button_active.png"),
-                new Texture("exit_button_inactive.png"));
+                new Texture("Botoes\\exit_button_active.png"),
+                new Texture("Botoes\\exit_button_inactive.png"));
         returnToMenu.setPosX(game.WIDTH/2 - returnToMenu.getWidth()/2);
     }
 
@@ -49,7 +50,7 @@ public class WinScreen implements Screen {
         y += game.font.getLineHeight() * 1.5;
         game.font.draw(game.batch, winText, x, y);
 
-        if(returnToMenu.buttonFunction(game)){
+        if(returnToMenu.buttonFunction(game, delta)){
             this.dispose();
             game.setScreen(new MainMenu(game));
         }

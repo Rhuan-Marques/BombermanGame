@@ -1,4 +1,5 @@
-package com.mygdx.game.fase;
+package com.mygdx.game.screens;
+import com.mygdx.game.fase.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

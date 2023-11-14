@@ -9,7 +9,7 @@ public class Bomba extends ObjetoDoJogo implements Explodivel
 {
 	private float tempoDeExplosao = 0.5f;
     protected float contador;
-    private  Texture bombaTexture = new Texture("bomba.png");
+    private  Texture bombaTexture = new Texture("Bombas\\bomba.png");
     private int tamanhoDaExplosao;
 	private int vida; 
 	private boolean piercing;

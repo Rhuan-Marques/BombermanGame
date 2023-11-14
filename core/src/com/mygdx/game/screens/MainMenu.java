@@ -1,11 +1,11 @@
-package com.mygdx.game.fase;
+package com.mygdx.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.physics.bullet.collision._btMprSimplex_t;
 import com.mygdx.game.Bomberman;
+import com.mygdx.game.screens.BotaoClicavel;
 
 
 public class MainMenu implements Screen {
@@ -20,19 +20,19 @@ public class MainMenu implements Screen {
     {
         this.game = game;
         play = new BotaoClicavel(-1, 350, 330, 150,
-                new Texture("play_button_active.png"),
-                new Texture("play_button_inactive.png"));
+                new Texture("Botoes\\play_button_active.png"),
+                new Texture("Botoes\\play_button_inactive.png"));
 
         play.setPosX(game.WIDTH/2 - play.getWidth()/2);
 
         exit = new BotaoClicavel(-1, 100, 300, 150,
-                new Texture("exit_button_active.png"),
-                new Texture("exit_button_inactive.png"));
+                new Texture("Botoes\\exit_button_active.png"),
+                new Texture("Botoes\\exit_button_inactive.png"));
         exit.setPosX(game.WIDTH/2 - exit.getWidth()/2);
 
         tutorial = new BotaoClicavel(-1, 280, 300, 80,
-                new Texture("tutorial_button_active.png"),
-                new Texture("tutorial_button_inactive.png"));
+                new Texture("Botoes\\tutorial_button_active.png"),
+                new Texture("Botoes\\tutorial_button_inactive.png"));
         tutorial.setPosX(game.WIDTH/2 - tutorial.getWidth()/2);
     }
 
@@ -52,17 +52,18 @@ public class MainMenu implements Screen {
         game.batch.begin();
 
 
-        if(play.buttonFunction(game)){
+        if(play.buttonFunction(game, delta)){
             this.dispose();
             game.setScreen(new MainGame(game));
         }
-        // Verifica se o mouse está sobre o botão de saída
-        else if (exit.buttonFunction(game)){
+
+        else if (exit.buttonFunction(game, delta)){
                 Gdx.app.exit();
         }
-        else if(tutorial.buttonFunction(game)){
+
+        else if(tutorial.buttonFunction(game, delta)){
                 this.dispose();
-                game.setScreen(new TutorialMenu(game));
+                game.setScreen(new MainTutorialMenu(game));
         }
 
         game.batch.end();

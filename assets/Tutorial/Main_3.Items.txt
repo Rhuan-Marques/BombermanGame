@@ -1,0 +1,4 @@
+----- Items -----
+Quebre paredes para conseguir items
+Ao obte-los pode conseguir diversos bonus!
+-- Clique aqui para saber mais

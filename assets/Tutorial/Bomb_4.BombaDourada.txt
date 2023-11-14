@@ -1,0 +1,5 @@
+--- Bomba Dourada ---
+Explosao: Comum
+Alcance: 1
+Dano: 3
+Polvora: Alcance 3x3 (Quadrado)

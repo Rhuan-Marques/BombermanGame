@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BombaVermelha extends Bomba{
-    private static Texture bombaVermTexture = new Texture("bombaVermelha.png");
+    private static Texture bombaVermTexture = new Texture("Bombas\\bombaVermelha.png");
     public BombaVermelha(int posX, int posY, Player criador)
     {
         super(posX, posY, criador);

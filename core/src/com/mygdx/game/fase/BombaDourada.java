@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import java.util.List;
 
 public class BombaDourada extends Bomba{
-    private static Texture bombaDouradaTexture = new Texture("bombaDourada.png");
+    private static Texture bombaDouradaTexture = new Texture("Bombas\\bombaDourada.png");
     public BombaDourada(int posX, int posY, Player criador){
         super(posX, posY, criador);
         this.setTexture(bombaDouradaTexture);

@@ -1,0 +1,5 @@
+--- Bomba ---
+Explosao: Comum
+Alcance: 1
+Dano: 1
+Polvora: Alcance+2

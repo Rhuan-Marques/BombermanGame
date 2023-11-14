@@ -1,0 +1,3 @@
+--- Jogadores ---
+Jogador 1 se move com as setas, bomba com Right-Shift
+Jogador 2 se move com WASD, bomba com F

@@ -1,0 +1,5 @@
+--- Bomba Azul ---
+Explosao: Quadrada
+Alcance: 3x3
+Dano: 1
+Polvora: alcance 5x5
